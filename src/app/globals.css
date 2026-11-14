@@ -64,6 +64,15 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  --status-pending-background: var(--color-yellow-100);
+  --status-pending-foreground: var(--color-yellow-800);
+  --status-pending-border: var(--color-yellow-200);
+  --status-approved-background: var(--color-blue-50);
+  --status-approved-foreground: var(--color-blue-800);
+  --status-approved-border: var(--color-blue-200);
+  --status-rejected-background: var(--color-orange-50);
+  --status-rejected-foreground: var(--color-orange-800);
+  --status-rejected-border: var(--color-orange-200);
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: oklch(0.708 0 0);

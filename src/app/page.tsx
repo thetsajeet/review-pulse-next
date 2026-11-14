@@ -1,5 +1,8 @@
 import {
   Activity,
+  ArrowDown,
+  ArrowRight,
+  ArrowUp,
   Check,
   ClipboardList,
   GitBranch,
@@ -91,6 +94,7 @@ export default function Home() {
         </nav>
         <MotionLink href="#how-it-works" size="small">
           Explore the concept
+          <ArrowRight aria-hidden="true" />
         </MotionLink>
       </header>
 
@@ -110,9 +114,11 @@ export default function Home() {
             review. You approve it, reject it, or steer it.
           </p>
           <div className="hero-actions">
-            <MotionLink href="#how-it-works">See how it works</MotionLink>
+            <MotionLink href="#how-it-works">
+              See how it works <ArrowDown aria-hidden="true" />
+            </MotionLink>
             <MotionLink href="#features" variant="outline">
-              Explore features
+              Explore features <ArrowRight aria-hidden="true" />
             </MotionLink>
           </div>
           <ProductPreview />
@@ -172,7 +178,9 @@ export default function Home() {
           <h2 className="display-heading">
             Your next review deserves a great reply.
           </h2>
-          <MotionLink href="#top">Back to top</MotionLink>
+          <MotionLink href="#top">
+            Back to top <ArrowUp aria-hidden="true" />
+          </MotionLink>
         </section>
       </main>
 

@@ -14,8 +14,15 @@ export function ProductPreview() {
       <div className="preview-body">
         <div className="preview-inbox">
           <div className="preview-tabs">
-            <span className="preview-tab-active">Pending 4</span>
-            <span>Approved 1</span>
+            <span className="preview-status preview-status-pending">
+              <Clock3 aria-hidden="true" /> Pending <strong>4</strong>
+            </span>
+            <span className="preview-status preview-status-approved">
+              <CircleCheck aria-hidden="true" /> Approved <strong>1</strong>
+            </span>
+            <span className="preview-status preview-status-rejected">
+              <CircleX aria-hidden="true" /> Rejected <strong>1</strong>
+            </span>
           </div>
           {reviews.map((review, index) => (
             <div className={`preview-review ${index === 0 ? "preview-review-active" : ""}`} key={review.name}>
@@ -32,25 +39,47 @@ export function ProductPreview() {
             </div>
           ))}
         </div>
-        <div className="preview-trace">
-          <div className="preview-node">
-            <span>CUSTOMER REVIEW</span>
+        <ol className="preview-trace" aria-label="Sample review timeline">
+          <li className="preview-node">
+            <span className="preview-node-marker"><MessageSquare aria-hidden="true" /></span>
+            <span className="preview-node-label">CUSTOMER REVIEW</span>
             <p>Waited 40 minutes for a cold pizza and nobody apologised at the table or at the counter.</p>
-          </div>
-          <div className="preview-node">
-            <span>HUMAN FEEDBACK</span>
+          </li>
+          <li className="preview-node">
+            <span className="preview-node-marker"><Sparkles aria-hidden="true" /></span>
+            <span className="preview-node-label">AGENT DRAFT V1</span>
+            <p>Hi Marcus, thank you for your feedback. We are sorry we fell short and would love the chance to make it right.</p>
+          </li>
+          <li className="preview-node">
+            <span className="preview-node-marker"><MessageSquareText aria-hidden="true" /></span>
+            <span className="preview-node-label">HUMAN FEEDBACK</span>
             <p>Warmer tone, name the manager, invite them back.</p>
-          </div>
-          <div className="preview-node">
-            <span>LATEST AGENT DRAFT V2</span>
+          </li>
+          <li className="preview-node preview-node-latest">
+            <span className="preview-node-marker"><Sparkles aria-hidden="true" /></span>
+            <span className="preview-node-label">LATEST AGENT DRAFT V2</span>
             <p>Hi Marcus, thank you for sharing this. We are truly sorry, and our manager Rhea would like to make it right.</p>
             <div className="preview-actions" aria-hidden="true">
-              <span>Approve</span><span>Reject</span><span>Refactor</span>
+              <span><Check /> Approve</span>
+              <span><X /> Reject</span>
+              <span><RefreshCw /> Refactor</span>
             </div>
-          </div>
-        </div>
+          </li>
+        </ol>
       </div>
       <figcaption id="preview-caption">Illustrative preview with sample reviews. Actions are not connected.</figcaption>
     </figure>
   );
 }
+import {
+  Check,
+  CircleCheck,
+  CircleX,
+  Clock3,
+  MessageSquare,
+  MessageSquareText,
+  RefreshCw,
+  Sparkles,
+  X,
+} from "lucide-react";
+
