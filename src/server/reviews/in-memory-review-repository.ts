@@ -43,11 +43,33 @@ export class InMemoryReviewRepository implements ReviewRepository {
   }
 
   async appendEvent(event: TimelineEvent): Promise<void> {
-    const review = this.reviews.get(event.reviewId);
-    const timeline = this.timelines.get(event.reviewId);
-    if (!review || !timeline) {
-      throw new ReviewNotFoundError(event.reviewId);
+    await this.appendEvents([event]);
+  }
+
+  async appendEvents(events: readonly TimelineEvent[]): Promise<void> {
+    if (events.length === 0) {
+      throw new InvalidTimelineEventError("At least one timeline event is required.");
     }
+
+    const reviewId = events[0].reviewId;
+    const storedReview = this.reviews.get(reviewId);
+    const storedTimeline = this.timelines.get(reviewId);
+    if (!storedReview || !storedTimeline) {
+      throw new ReviewNotFoundError(reviewId);
+    }
+    const review = structuredClone(storedReview);
+    const timeline = structuredClone(storedTimeline);
+    for (const event of events) {
+      if (event.reviewId !== reviewId) {
+        throw new InvalidTimelineEventError("Events in a batch must belong to the same review.");
+      }
+      this.validateAndAppend(review, timeline, event);
+    }
+    this.reviews.set(reviewId, review);
+    this.timelines.set(reviewId, timeline);
+  }
+
+  private validateAndAppend(review: Review, timeline: TimelineEvent[], event: TimelineEvent): void {
     if (review.status !== "pending") {
       throw new InvalidTimelineEventError("A decided review cannot be modified.");
     }

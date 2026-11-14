@@ -6,6 +6,8 @@ export interface ReviewRepository {
   getTimeline(reviewId: string): Promise<TimelineEvent[]>;
   /** Appends the event and updates the review status atomically for a decision. */
   appendEvent(event: TimelineEvent): Promise<void>;
+  /** Appends a review's events atomically, in the supplied order. */
+  appendEvents(events: readonly TimelineEvent[]): Promise<void>;
 }
 
 export class ReviewNotFoundError extends Error {

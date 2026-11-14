@@ -1,8 +1,8 @@
 # Review Pulse
 
-A landing-page concept for a human-in-the-loop review triage assistant.
-The product preview uses illustrative data; it is not connected to Google,
-Gemini, or a backend.
+A landing-page concept and workflow foundation for a human-in-the-loop review
+triage assistant. The landing-page preview uses illustrative data and is not
+connected to the workflow or Google Business Profile.
 
 ## Getting started
 
@@ -37,8 +37,26 @@ other source fields may be absent, including comments on rating-only reviews.
 
 This storage is local to one server process and resets on restart or module
 reload. It is not shared across instances and is not suitable for production.
-There are no review APIs or AI calls yet; the landing-page preview remains
-illustrative. A future database adapter can implement the repository contract.
+There are no review APIs yet; the landing-page preview remains illustrative.
+A future database adapter can implement the repository contract.
+
+## LangGraph and Gemini
+
+The server-side review workflow uses LangGraph and Gemini to analyze a review,
+generate a response, validate it, and save a draft. Invalid or oversized replies
+are retried once. Refactoring stores the owner's feedback and new draft
+atomically. Per-review conversations and sentiment are checkpointed in memory
+under a stable thread ID; the system prompt is supplied on every model call.
+The default checkpointer and repository are process-local and reset on restart;
+the workflow factory accepts alternative implementations. AI drafts require
+human review and are not guaranteed to be factually accurate.
+
+To run a real Gemini check, put `GEMINI_API_KEY` in `.env.local` (see
+`.env.example`) and run `bun run verify:gemini`. `GEMINI_MODEL` optionally
+overrides the default `gemini-3.5-flash-lite`. The check sends only seeded mock
+review data to Gemini, makes multiple model calls, and may incur API charges.
+It does not publish to Google. Regular tests use a stub model and do not call
+Gemini.
 
 ## UI foundation
 

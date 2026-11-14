@@ -173,4 +173,14 @@ describe("InMemoryReviewRepository", () => {
     event.content = "Changed";
     expect((await repository.getTimeline(draft.reviewId))[0].content).toBe(draft.content);
   });
+
+  test("appends batches atomically when a later event is invalid", async () => {
+    const repository = new InMemoryReviewRepository(mockReviews);
+    await repository.appendEvent(draft);
+    await expect(repository.appendEvents([
+      feedback,
+      { ...revision, version: 3 },
+    ])).rejects.toBeInstanceOf(InvalidTimelineEventError);
+    expect(await repository.getTimeline(draft.reviewId)).toEqual([draft]);
+  });
 });
