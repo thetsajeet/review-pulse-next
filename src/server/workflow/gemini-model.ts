@@ -12,9 +12,16 @@ function reviewInput(review: Review) {
   };
 }
 
+export class GeminiConfigurationError extends Error {
+  constructor() {
+    super("GEMINI_API_KEY is required to use the review workflow.");
+    this.name = "GeminiConfigurationError";
+  }
+}
+
 export function createGeminiModel(apiKey: string, model = "gemini-3.5-flash-lite"): ReviewModel {
   if (!apiKey.trim()) {
-    throw new Error("GEMINI_API_KEY is required to use the review workflow.");
+    throw new GeminiConfigurationError();
   }
   const chat = new ChatGoogle({ apiKey, model });
   const analyzer = chat.withStructuredOutput(sentimentSchema);

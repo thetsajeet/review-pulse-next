@@ -19,6 +19,11 @@ export interface DraftConversation {
 
 export interface DraftWorkflow {
   generate(reviewId: string, context?: DraftContext): Promise<DraftVersion>;
-  refactor(reviewId: string, instruction: string, context?: DraftContext): Promise<DraftVersion>;
+  refactor(
+    reviewId: string,
+    instruction: string,
+    context?: DraftContext,
+    expectedDraftId?: string,
+  ): Promise<DraftVersion>;
   getConversation(reviewId: string): Promise<DraftConversation>;
 }

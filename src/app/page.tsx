@@ -92,8 +92,8 @@ export default function Home() {
           <a href="#features">Features</a>
           <a href="#control">Control</a>
         </nav>
-        <MotionLink href="#how-it-works" size="small">
-          Explore the concept
+        <MotionLink href="/command-center" size="small">
+          Open demo
           <ArrowRight aria-hidden="true" />
         </MotionLink>
       </header>
@@ -114,11 +114,11 @@ export default function Home() {
             review. You approve it, reject it, or steer it.
           </p>
           <div className="hero-actions">
-            <MotionLink href="#how-it-works">
-              See how it works <ArrowDown aria-hidden="true" />
+            <MotionLink href="/command-center">
+              Open demo <ArrowRight aria-hidden="true" />
             </MotionLink>
-            <MotionLink href="#features" variant="outline">
-              Explore features <ArrowRight aria-hidden="true" />
+            <MotionLink href="#how-it-works" variant="outline">
+              See how it works <ArrowDown aria-hidden="true" />
             </MotionLink>
           </div>
           <ProductPreview />

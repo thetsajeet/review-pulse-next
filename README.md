@@ -1,8 +1,8 @@
 # Review Pulse
 
-A landing-page concept and workflow foundation for a human-in-the-loop review
-triage assistant. The landing-page preview uses illustrative data and is not
-connected to the workflow or Google Business Profile.
+A human-in-the-loop review triage prototype with a Command Center, REST API,
+and LangGraph/Gemini workflow. It uses mock reviews and does not connect to
+Google Business Profile. The landing-page preview is illustrative.
 
 ## Getting started
 
@@ -13,7 +13,14 @@ bun install
 bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Run `bun test`,
+Set `GEMINI_API_KEY` in `.env.local` (see `.env.example`) before generating
+drafts. Open [http://localhost:3000/command-center](http://localhost:3000/command-center),
+select a pending review to generate its first draft, and optionally provide
+feedback to refactor it. Approve or reject records a local demo decision only;
+nothing is published to Google. AI drafts can contain inaccurate or unsupported
+claims, so review them carefully.
+
+Run `bun test`,
 `bun run lint`, and `bun run build` to validate changes.
 
 ## Review foundation
@@ -37,8 +44,30 @@ other source fields may be absent, including comments on rating-only reviews.
 
 This storage is local to one server process and resets on restart or module
 reload. It is not shared across instances and is not suitable for production.
-There are no review APIs yet; the landing-page preview remains illustrative.
 A future database adapter can implement the repository contract.
+
+## Review API
+
+The API delegates to a service, repository, and workflow rather than accessing
+mock data directly. All responses are JSON and uncached. POST requests require
+`Content-Type: application/json`; when an Origin header is present it must
+match the request host and protocol.
+
+| Method and path | Body | Result |
+| --- | --- | --- |
+| `GET /api/reviews?status=pending` | — | `{ reviews }`; status is optional (`pending`, `approved`, `rejected`) |
+| `GET /api/reviews/{reviewId}` | — | `{ review, timeline }` |
+| `POST /api/reviews/{reviewId}/drafts` | `{}` or `{ "context": { "tone": "...", "businessContext": "..." } }` | `{ draft }` |
+| `POST /api/reviews/{reviewId}/drafts/{draftId}/refine` | `{ "instruction": "...", "context": { "tone": "...", "businessContext": "..." } }` | `{ draft }`; context is optional |
+| `POST /api/reviews/{reviewId}/approve` | `{ "draftId": "..." }` | `{ decision }` |
+| `POST /api/reviews/{reviewId}/reject` | `{ "draftId": "..." }` | `{ decision }` |
+
+Writes return 201 on success. Invalid requests return 400, missing reviews
+return 404, stale drafts and invalid workflow transitions return 409, and
+missing Gemini configuration returns 503. Errors use `{ "error": "..." }`.
+Decisions are terminal, and refactoring or deciding against an outdated draft
+is rejected. The prototype has no authentication or production security and
+must not be exposed publicly.
 
 ## LangGraph and Gemini
 

@@ -10,6 +10,7 @@ import { sentimentSchema, type ReviewModel } from "./model";
 const WorkflowState = new StateSchema({
   reviewId: z.string(),
   instruction: z.string().nullable(),
+  expectedDraftId: z.string().nullable(),
   tone: z.string(),
   businessContext: z.string(),
   review: z.custom<Review>().nullable(),
@@ -61,6 +62,9 @@ export function createReviewWorkflow(
       }
       if (state.instruction !== null && !latestDraft) {
         throw new DraftWorkflowError("A draft is required before refactoring.");
+      }
+      if (state.expectedDraftId !== null && latestDraft?.id !== state.expectedDraftId) {
+        throw new DraftWorkflowError("The draft has changed. Refresh and try again.");
       }
       return { review, latestDraft };
     })
@@ -142,7 +146,12 @@ export function createReviewWorkflow(
     .addEdge("fail", END)
     .compile({ checkpointer });
 
-  async function run(reviewId: string, instruction: string | null, context: DraftContext = {}) {
+  async function run(
+    reviewId: string,
+    instruction: string | null,
+    context: DraftContext = {},
+    expectedDraftId: string | null = null,
+  ) {
     if (!reviewId.trim()) throw new DraftWorkflowError("Review ID is required.");
     if (instruction !== null && !instruction.trim()) {
       throw new DraftWorkflowError("Refactor instructions must not be empty.");
@@ -156,6 +165,7 @@ export function createReviewWorkflow(
         {
           reviewId,
           instruction: instruction?.trim() ?? null,
+          expectedDraftId,
           tone: context.tone?.trim() || "Professional",
           businessContext: context.businessContext?.trim() ?? "",
           review: null,
@@ -177,7 +187,8 @@ export function createReviewWorkflow(
 
   return {
     generate: (reviewId, context) => run(reviewId, null, context),
-    refactor: (reviewId, instruction, context) => run(reviewId, instruction, context),
+    refactor: (reviewId, instruction, context, expectedDraftId) =>
+      run(reviewId, instruction, context, expectedDraftId),
     async getConversation(reviewId): Promise<DraftConversation> {
       if (!(await repository.get(reviewId))) throw new ReviewNotFoundError(reviewId);
       const id = threadId(reviewId);
