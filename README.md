@@ -6,15 +6,15 @@ Gemini, or a backend.
 
 ## Getting started
 
-Requires Node.js 20.9 or later and npm.
+Requires Bun 1.4.4 and Node.js 20.9 or later.
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Run `npm run lint` and
-`npm run build` to validate changes.
+Open [http://localhost:3000](http://localhost:3000). Run `bun run lint` and
+`bun run build` to validate changes.
 
 ## UI foundation
 
