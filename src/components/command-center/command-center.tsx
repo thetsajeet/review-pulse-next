@@ -5,15 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Activity,
-  ArrowLeft,
   Check,
+  ChevronDown,
   CircleCheck,
   CircleX,
   Clock3,
   Inbox,
+  LayoutDashboard,
+  LockKeyhole,
   LoaderCircle,
+  MapPin,
   MessageSquare,
   MessageSquareText,
+  Search,
+  Settings,
   RefreshCw,
   Send,
   Sparkles,
@@ -28,6 +33,7 @@ import { cn } from "@/lib/utils";
 
 const spring = { type: "spring", stiffness: 260, damping: 20 } as const;
 const filters = [
+  { status: "all", label: "All", icon: Inbox },
   { status: "pending", label: "Pending", icon: Clock3 },
   { status: "approved", label: "Approved", icon: CircleCheck },
   { status: "rejected", label: "Rejected", icon: CircleX },
@@ -262,9 +268,12 @@ function ReviewWorkspace({
   return (
     <section className="workspace" aria-label={`Review trace for ${reviewerName(detail.review)}`}>
       <header className="workspace-header">
-        <div className="workspace-heading">
-          <h1>Review from <strong>{reviewerName(detail.review)}</strong></h1>
-          <p>{detail.review.location.name} <span>·</span> Google review</p>
+        <div className="workspace-header-review">
+          <Avatar review={detail.review} />
+          <div className="workspace-heading">
+            <h1>{reviewerName(detail.review)}</h1>
+            <p>Google review <span>·</span> {detail.review.location.name} <span>·</span> Review trace</p>
+          </div>
         </div>
         <span className={cn("workspace-status", `workspace-status-${detail.review.status}`)}>
           {detail.review.status === "pending"
@@ -304,7 +313,7 @@ function ReviewWorkspace({
                 <span className={cn("trace-marker", event.type === "draft" && event.id === latestDraft?.id && "trace-marker-active")}>
                   {event.type === "draft" ? <Sparkles aria-hidden="true" /> : <MessageSquareText aria-hidden="true" />}
                 </span>
-                <article className={cn("trace-card", event.type === "draft" && event.id === latestDraft?.id && "trace-card-latest")}>
+                <article className={cn("trace-card", event.type === "feedback" && "trace-card-feedback", event.type === "draft" && event.id === latestDraft?.id && "trace-card-latest")}>
                   <div className="trace-card-heading">
                     <span>{event.type === "draft" ? `Agent draft v${event.version}` : "Human feedback"}</span>
                     <div className="trace-card-meta">
@@ -314,7 +323,7 @@ function ReviewWorkspace({
                       <time>{relativeTime(event.createdAt)}</time>
                     </div>
                   </div>
-                  <p className={event.type === "feedback" ? "feedback-content" : undefined}>{event.content}</p>
+                  <p>{event.content}</p>
                   {event.type === "draft" && event.id === latestDraft?.id && (
                     decision ? (
                       <div className={cn("terminal-badge", `terminal-${decision.status}`)}>
@@ -402,12 +411,13 @@ function ReviewWorkspace({
 
 export function CommandCenter() {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [filter, setFilter] = useState<ReviewStatus>("pending");
+  const [filter, setFilter] = useState<ReviewStatus | "all">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selectedRef = useRef<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const refresh = useCallback(async () => {
     try {
@@ -444,77 +454,157 @@ export function CommandCenter() {
     if (selectedRef.current === reviewId) setFilter(status);
     void refresh();
   }
+
+  const filteredReviews = reviews.filter((review) => {
+    const matchesStatus = filter === "all" || review.status === filter;
+    const query = searchQuery.trim().toLocaleLowerCase();
+    const matchesQuery =
+      !query ||
+      reviewerName(review).toLocaleLowerCase().includes(query) ||
+      (review.comment ?? "").toLocaleLowerCase().includes(query);
+    return matchesStatus && matchesQuery;
+  });
   const locationName = reviews[0]?.location.name;
 
   return (
     <main className="command-center">
-      <aside className="review-inbox" aria-label="Review inbox">
-        <header className="inbox-header">
-          <div className="inbox-top">
-            <Link className="inbox-brand" href="/">
-              <span className="brand-mark"><Activity aria-hidden="true" /></span>
-              <span>Review Pulse</span>
-            </Link>
-            <Link className="back-link" href="/"><ArrowLeft aria-hidden="true" /> Home</Link>
+      <aside className="app-sidebar" aria-label="Primary navigation">
+        <Link className="sidebar-brand" href="/">
+          <span className="sidebar-brand-mark"><Activity aria-hidden="true" /></span>
+          <span className="sidebar-brand-copy">
+            <strong>Review Pulse</strong>
+            <small>{locationName ?? "Demo workspace"}</small>
+          </span>
+          <ChevronDown className="sidebar-brand-chevron" aria-hidden="true" />
+        </Link>
+        <span className="sidebar-label">Menu</span>
+        <nav className="sidebar-nav">
+          <Link className="sidebar-link" href="/">
+            <LayoutDashboard aria-hidden="true" /><span>Dashboard</span>
+          </Link>
+          <Link className="sidebar-link sidebar-link-active" href="/command-center" aria-current="page">
+            <MessageSquare aria-hidden="true" /><span>Reviews</span><b>{reviews.length}</b>
+          </Link>
+          <span className="sidebar-link sidebar-link-disabled" aria-disabled="true">
+            <MapPin aria-hidden="true" /><span>Locations</span><small>Soon</small>
+          </span>
+        </nav>
+        <span className="sidebar-label sidebar-label-workspace">Workspace</span>
+        <nav className="sidebar-nav">
+          <span className="sidebar-link sidebar-link-disabled" aria-disabled="true">
+            <Settings aria-hidden="true" /><span>Settings</span><small>Soon</small>
+          </span>
+        </nav>
+        <div className="sidebar-profile">
+          <span className="profile-initials">DP</span>
+          <span><strong>Demo owner</strong><small>Profile preview</small></span>
+          <span className="profile-menu" aria-hidden="true">···</span>
+        </div>
+      </aside>
+
+      <div className="command-main">
+        <header className="app-topbar">
+          <Link className="mobile-brand" href="/">
+            <span className="sidebar-brand-mark"><Activity aria-hidden="true" /></span>
+            Review Pulse
+          </Link>
+          <div className="breadcrumb">
+            <Inbox aria-hidden="true" />
+            <span>Reviews</span><b>/</b><strong>Inbox</strong>
           </div>
-          <div className="inbox-heading">
-            <h1>Review inbox</h1>
-            <p>{locationName ?? "Demo workspace"}</p>
-          </div>
-          <div className="inbox-filters" aria-label="Filter reviews by status">
-            {filters.map(({ status, label, icon: Icon }) => (
-              <button
-                key={status}
-                type="button"
-                className={cn("inbox-filter", `filter-${status}`, filter === status && "filter-active")}
-                aria-pressed={filter === status}
-                onClick={() => { setFilter(status); selectReview(null); }}
-              >
-                <Icon aria-hidden="true" /> {label} <strong>{reviews.filter((review) => review.status === status).length}</strong>
-              </button>
-            ))}
+          <label className="global-search">
+            <Search aria-hidden="true" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search reviews"
+              aria-label="Search reviews"
+            />
+          </label>
+          <div className="topbar-status">
+            <span className="demo-indicator"><i /> Demo mode</span>
+            <span className="toolbar-avatar" aria-label="Demo owner">DP</span>
           </div>
         </header>
-        {loading ? (
-          <div className="inbox-empty" role="status"><LoaderCircle className="spin" /> Loading reviews...</div>
-        ) : error ? (
-          <div className="inbox-empty" role="alert">{error} <button type="button" onClick={() => void refresh()}>Retry</button></div>
-        ) : reviews.filter((review) => review.status === filter).length === 0 ? (
-          <div className="inbox-empty"><Inbox /> No {filter} reviews.</div>
-        ) : (
-          <ul className="inbox-list">
-            {reviews.filter((review) => review.status === filter).map((review) => (
-              <li key={review.id}>
-                <button
-                  type="button"
-                  className={cn("inbox-review", selectedId === review.id && "inbox-review-selected")}
-                  aria-pressed={selectedId === review.id}
-                  onClick={() => selectReview(review.id)}
-                >
-                  <Avatar review={review} />
-                  <span className="inbox-review-content">
-                    <span className="inbox-review-heading"><strong>{reviewerName(review)}</strong><time>{relativeTime(review.createTime)}</time></span>
-                    <Stars rating={review.starRating} />
-                    <span className="review-snippet">{review.comment || "No written review."}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </aside>
-      {selectedId ? (
-        <ReviewWorkspace key={selectedId} reviewId={selectedId} onDecision={onDecision} onNotice={setNotice} />
-      ) : (
-        <div className="workspace-empty">
-          <span className="workspace-empty-icon"><MessageSquare aria-hidden="true" /></span>
-          <strong>Choose a review to begin</strong>
-          <span>Read the customer&apos;s words, review the draft, and make the final call.</span>
-          <p className="workspace-empty-note">Select a pending review to ask the agent for a first draft.</p>
+
+        <div className="command-content">
+          <section className="review-inbox" aria-label="Review inbox">
+            <header className="inbox-header">
+              <div className="inbox-title-row">
+                <h1>Inbox</h1>
+                <span>{filteredReviews.length}</span>
+              </div>
+              <div className="inbox-filters" aria-label="Filter reviews by status">
+                {filters.map(({ status, label, icon: Icon }) => (
+                  <button
+                    key={status}
+                    type="button"
+                    className={cn("inbox-filter", filter === status && "inbox-filter-active")}
+                    aria-pressed={filter === status}
+                    onClick={() => { setFilter(status); selectReview(null); }}
+                  >
+                    {label} <b>{status === "all" ? reviews.length : reviews.filter((review) => review.status === status).length}</b>
+                    <Icon aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </header>
+            {loading ? (
+              <div className="inbox-empty" role="status"><LoaderCircle className="spin" /> Loading reviews...</div>
+            ) : error ? (
+              <div className="inbox-empty" role="alert">{error} <button type="button" onClick={() => void refresh()}>Retry</button></div>
+            ) : filteredReviews.length === 0 ? (
+              <div className="inbox-empty">
+                <Inbox />
+                {searchQuery.trim()
+                  ? "No reviews match your search."
+                  : `No ${filter === "all" ? "" : `${filter} `}reviews.`}
+              </div>
+            ) : (
+              <ul className="inbox-list">
+                {filteredReviews.map((review) => (
+                  <li key={review.id}>
+                    <button
+                      type="button"
+                      className={cn("inbox-review", selectedId === review.id && "inbox-review-selected")}
+                      aria-pressed={selectedId === review.id}
+                      onClick={() => selectReview(review.id)}
+                    >
+                      <span className="inbox-review-content">
+                        <span className="inbox-review-heading"><strong>{reviewerName(review)}</strong><time>{relativeTime(review.createTime)}</time></span>
+                        <Stars rating={review.starRating} />
+                        <span className="review-snippet">{review.comment || "No written review."}</span>
+                        <span className={cn("review-status", `review-status-${review.status}`)}>{review.status}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          {selectedId ? (
+            <ReviewWorkspace key={selectedId} reviewId={selectedId} onDecision={onDecision} onNotice={setNotice} />
+          ) : (
+            <div className="workspace-empty">
+              <span className="workspace-empty-icon"><MessageSquare aria-hidden="true" /></span>
+              <strong>Choose a review to begin</strong>
+              <span>Read the customer&apos;s words, review the draft, and make the final call.</span>
+              <p className="workspace-empty-note">Select a pending review to ask the agent for a first draft.</p>
+            </div>
+          )}
+          <aside className="details-panel" aria-label="Additional review details">
+            <header><h2>Details</h2></header>
+            <div className="details-coming-soon">
+              <span><LockKeyhole aria-hidden="true" /></span>
+              <strong>Coming soon</strong>
+            </div>
+          </aside>
         </div>
-      )}
-      <div className="toast-region" aria-live="polite">
-        {notice && <div className="toast"><CircleCheck aria-hidden="true" /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X /></button></div>}
+
+        <div className="toast-region" aria-live="polite">
+          {notice && <div className="toast"><CircleCheck aria-hidden="true" /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X /></button></div>}
+        </div>
       </div>
     </main>
   );

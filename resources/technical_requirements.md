@@ -1,20 +1,26 @@
 # Technical UI/UX Implementation Requirements — Review Pulse
 
 ## 1. Global Layout & Architecture
-* **Viewport Layout**: The Dashboard Command Center operates on a strict 2-column layout with a 30-70 split.
-  * **Left Column (30%)**: The Review Inbox (List View).
-  * **Right Column (70%)**: The Review Trace Timeline (Detailed Workspace).
+* **Viewport Layout**: The Command Center uses four areas: a left navigation rail, review inbox, review trace, and details panel.
+  * **Navigation Rail (about 15%)**: Product navigation and demo owner profile.
+  * **Review Inbox (about 25%)**: Searchable review list with status filters.
+  * **Review Trace (about 40%)**: Selected review and chronological workflow.
+  * **Details Panel (about 20%)**: Reserved for future review details; show a "Coming soon" state for now.
+  * The inbox, review trace, and details are separate bordered panels with space between them and the top bar. The inbox contains individually bordered review cards; the selected review has a stronger outline.
+  * At narrower widths, hide the details panel and stack the inbox above the trace; keep search and review actions usable.
+* **Top Bar**: Show the Reviews / Inbox breadcrumb, review search, and an explicit Demo mode indicator. Do not imply that Google is connected.
 * **Design System Constraints**: Light mode strictly enforced. Background `#FAFAFA`, surface `#FFFFFF`. Borders are 1px solid `#E4E4E7`. No drop shadows, no gradients. 
+* **Landing Features**: Use a five-card bento layout: a wide review trace, sentiment analysis, refinement, demo decisions, and the status inbox. Google publishing remains explicitly unconnected.
 
-## 2. Review Inbox (Left Column - 30%)
+## 2. Review Inbox
 * **Categorization**: Reviews must be visibly categorized and filterable by their current status:
   * `Pending`: Awaiting human action.
-  * `Approved`: Successfully published to Google Maps.
-  * `Rejected`: AI draft discarded/withdrawn.
+  * `Approved`: Approved as a local demo decision; not published to Google Maps.
+  * `Rejected`: Draft withdrawn as a local demo decision.
 * **Row Card Data**: Each row must display the reviewer's name, star rating, a truncated snippet of the review, and the relative timestamp.
-* **Interaction**: Clicking a row sets the active state, updating the Right Column to display its specific trace loop.
+* **Interaction**: Clicking a row sets the active state and updates the review trace beside the inbox.
 
-## 3. Review Trace Timeline (Right Column - 70%)
+## 3. Review Trace Timeline
 This section acts as a chronological chat/timeline trace of the review processing lifecycle. Items stack vertically top-to-bottom.
 
 * **Timeline Nodes**:
@@ -36,9 +42,11 @@ Positioned directly beneath the *latest* agent draft response inside the timelin
   * The textarea must be styled as a standard form input box, not a button, allowing the user to type explicit instructions for the AI.
 * **Terminal States (Approve / Reject)**:
   * **System Action**: Executing Approve or Reject transitions the review out of the "Pending" category on the left sidebar.
-  * **Toast Notification**: A global toast notification must fire on completion (e.g., "Response successfully published to Google Maps").
+  * **Toast Notification**: A global toast notification must fire on completion (e.g., "Approved in demo. Nothing was sent to Google.").
   * **Timeline Indication**: The action buttons disappear and are replaced by a permanent terminal state badge inline within the trace (e.g., a green checkmark badge "Successfully Approved and Sent" or a red badge "Draft Withdrawn").
 
 ## 5. Animation & Motion (Framer Motion)
 * State transitions (expanding the refactor box, updating the timeline with a new draft, sliding in terminal state badges) must use Framer Motion spring physics: `stiffness: 260, damping: 20`.
 * Hover states on actionable buttons should use a subtle `scale: 0.98` micro-interaction.
+* The landing-page workflow uses a dotted zigzag connector and a mint circular marker that travels left to right through stages 01–04, then immediately restarts near stage 01. Reduced motion keeps the marker still near the start of the route.
+* Cubes in the hero, workflow, human-in-the-loop, and closing areas float gently with staggered timing. Pause nonessential motion offscreen and provide a reduced-motion alternative.

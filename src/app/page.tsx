@@ -4,51 +4,11 @@ import {
   ArrowRight,
   ArrowUp,
   Check,
-  Inbox,
-  Pencil,
 } from "lucide-react";
 import { MotionLink } from "@/components/landing/motion-link";
 import { ProductPreview } from "@/components/landing/product-preview";
+import { CubeMark, WorkflowDiagram } from "@/components/landing/illustrations";
 import "./landing.css";
-
-const steps = [
-  {
-    title: "The agent drafts",
-    description:
-      "Start with a thoughtful first reply instead of a blank page.",
-  },
-  {
-    title: "You steer",
-    description:
-      "Ask for a change in plain English, or approve the reply as written.",
-  },
-  {
-    title: "You decide",
-    description:
-      "The final call stays yours. This preview records demo decisions; it does not publish to Google.",
-  },
-];
-
-const features = [
-  {
-    icon: Inbox,
-    title: "One clear review queue",
-    description:
-      "Sort reviews by status and quickly see the rating, comment, and arrival time.",
-  },
-  {
-    icon: Pencil,
-    title: "A reply you can shape",
-    description:
-      "Give the agent a short instruction to make a draft warmer, clearer, or more concise.",
-  },
-  {
-    icon: Check,
-    title: "You make the final call",
-    description:
-      "Keep the review, draft versions, and your decision together in one trace.",
-  },
-];
 
 function Brand() {
   return (
@@ -63,11 +23,11 @@ function Brand() {
 
 export default function Home() {
   return (
-    <div id="top">
+    <div id="top" className="landing-page">
       <header className="site-header page-width">
         <Brand />
         <nav className="main-nav" aria-label="Main navigation">
-          <a href="#how-it-works">How it works</a>
+          <a href="#workflow">Workflow</a>
           <a href="#features">Features</a>
           <a href="#control">Control</a>
         </nav>
@@ -79,100 +39,157 @@ export default function Home() {
 
       <main>
         <section className="hero page-width" aria-labelledby="hero-title">
+          <CubeMark
+            className="hero-cube hero-cube-left"
+            variant="star"
+            floatDuration={4.6}
+          />
+          <CubeMark
+            className="hero-cube hero-cube-right"
+            variant="check"
+            floatDelay={0.65}
+            floatDuration={5.2}
+          />
           <div className="hero-copy">
             <h1 id="hero-title" className="display-heading hero-title">
-              Answer every review.
+              Thoughtful replies.
               <br />
-              <em>Publish nothing</em> without your say.
+              <em>Nothing sent unseen.</em>
             </h1>
             <p className="hero-description">
-              An always-on AI assistant for your review inbox, designed to
-              prepare thoughtful first replies around your business. You decide
-              what happens next.
+              Pulse prepares a first reply for your review. Refine it in your
+              own words, then make the call yourself.
             </p>
             <div className="hero-actions">
               <MotionLink href="/command-center">
                 Open demo <ArrowRight aria-hidden="true" />
               </MotionLink>
-              <MotionLink href="#how-it-works" variant="outline">
-                See how it works <ArrowDown aria-hidden="true" />
+              <MotionLink href="#workflow" variant="outline">
+                See the workflow <ArrowDown aria-hidden="true" />
               </MotionLink>
             </div>
-            <p className="hero-note">
-              <span className="status-dot" aria-hidden="true" />
-              Concept preview. Sample reviews only; Google sync and publishing
-              are not connected.
-            </p>
           </div>
-          <ProductPreview />
         </section>
 
-        <section id="how-it-works" className="content-section page-width">
-          <h2 className="display-heading section-heading">
-            From a new review to a published
-            <br className="desktop-break" /> reply in three moves.
-          </h2>
-          <div className="steps-grid">
-            {steps.map((step, index) => (
-              <article className="step" key={step.title}>
-                <span className="step-number">0{index + 1}</span>
-                <h3 className="display-heading">{step.title}</h3>
-                <p>{step.description}</p>
-              </article>
-            ))}
-          </div>
+        <WorkflowDiagram />
+
+        <section className="preview-section page-width" aria-label="Product preview">
+          <ProductPreview />
         </section>
 
         <section id="features" className="content-section page-width">
           <h2 className="display-heading section-heading">
-            Less time writing. More room to decide.
+            Built around the one thing that matters: a thoughtful reply.
           </h2>
           <div className="feature-grid">
-            {features.map(({ icon: Icon, title, description }) => (
-              <article className="feature-item" key={title}>
-                <span className="feature-icon">
-                  <Icon aria-hidden="true" size={17} />
-                </span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
-                </div>
-              </article>
-            ))}
+            <article className="feature-item feature-trace">
+              <div className="feature-visual trace-visual" aria-hidden="true">
+                <span><i /> Customer review <time>10:42</time></span>
+                <span><i /> Pulse analysis <time>complete</time></span>
+                <span><i /> Agent draft v1 <time>superseded</time></span>
+                <span><i /> Your feedback <time>10:51</time></span>
+                <span className="trace-visual-latest"><i /> Latest draft v2 <time>10:52</time></span>
+              </div>
+              <div className="feature-copy">
+                <h3>A full trace for every review</h3>
+                <p>See the customer, the agent, every draft, and your feedback in one timeline.</p>
+              </div>
+            </article>
+            <article className="feature-item feature-sentiment">
+              <div className="feature-visual sentiment-visual" aria-hidden="true">
+                <span>Positive <i className="sentiment-dot sentiment-positive" /></span>
+                <span>Mixed <i className="sentiment-dot sentiment-mixed" /></span>
+                <span>Negative <i className="sentiment-dot sentiment-negative" /></span>
+                <small>Review context for the agent</small>
+              </div>
+              <div className="feature-copy">
+                <h3>Sentiment-informed drafts</h3>
+                <p>Pulse considers the review&apos;s sentiment when preparing a reply.</p>
+              </div>
+            </article>
+            <article className="feature-item feature-refine">
+              <div className="feature-visual refine-visual" aria-hidden="true">
+                <p>Keep it shorter and sign off as the owner.</p>
+                <span><Check /> Instruction ready for the agent</span>
+              </div>
+              <div className="feature-copy">
+                <h3>Refine in plain words</h3>
+                <p>Tell the agent what to change and review the new draft before deciding.</p>
+              </div>
+            </article>
+            <article className="feature-item feature-decision">
+              <div className="feature-visual decision-visual" aria-hidden="true">
+                <CubeMark variant="check" floatDelay={0.3} />
+                <span><Check /> Approved in demo</span>
+              </div>
+              <div className="feature-copy">
+                <h3>Your decision, recorded</h3>
+                <p>Approve or reject a draft and keep the decision in the review&apos;s trace.</p>
+              </div>
+            </article>
+            <article className="feature-item feature-inbox">
+              <div className="feature-visual inbox-visual" aria-hidden="true">
+                <div className="inbox-visual-tabs"><b>All</b><span>Pending</span><span>Approved</span><span>Rejected</span></div>
+                <span><i className="inbox-dot inbox-dot-pending" /><b>Marcus Webb</b><small>2 stars</small></span>
+                <span><i className="inbox-dot inbox-dot-approved" /><b>Sofia Rossi</b><small>5 stars</small></span>
+              </div>
+              <div className="feature-copy">
+                <h3>One inbox, every status</h3>
+                <p>Filter pending, approved, and rejected reviews without losing the history.</p>
+              </div>
+            </article>
           </div>
         </section>
 
         <section id="control" className="content-section page-width">
           <div className="control-card">
-            <div>
-              <h2 className="display-heading">The agent writes. You decide.</h2>
+            <div className="control-copy">
+              <h2 className="display-heading">Pulse writes. You decide.</h2>
               <p>
-                Drafts are a starting point, not an automatic send. Your
-                business keeps the final say on every response.
+                Nothing reaches a customer on its own. Every reply waits for a
+                person, and every demo decision stays with its review.
               </p>
+              <ul className="control-list">
+                <li><Check aria-hidden="true" /> Drafts wait for your action</li>
+                <li><Check aria-hidden="true" /> Refine as many times as you like</li>
+                <li><Check aria-hidden="true" /> Decisions stay visible in the trace</li>
+              </ul>
             </div>
-            <ul className="control-list">
-              <li><Check aria-hidden="true" /> A person reviews every draft</li>
-              <li><Check aria-hidden="true" /> Shape replies with your own guidance</li>
-              <li><Check aria-hidden="true" /> Keep the decision beside the review</li>
-            </ul>
+            <div className="control-art" aria-hidden="true">
+              <svg className="control-art-lines" viewBox="0 0 360 230" preserveAspectRatio="none">
+                <path d="M78 56 L180 164 L282 47" />
+              </svg>
+              <CubeMark variant="pin" floatDuration={5.4} />
+              <CubeMark variant="check" floatDelay={0.45} floatDuration={4.8} />
+              <CubeMark variant="lock" floatDelay={0.9} floatDuration={5.1} />
+            </div>
           </div>
         </section>
 
         <section className="closing page-width">
+          <div className="closing-cubes" aria-hidden="true">
+            <CubeMark variant="star" floatDuration={4.4} />
+            <CubeMark variant="spark" floatDelay={0.35} floatDuration={4.9} />
+            <CubeMark variant="check" floatDelay={0.7} floatDuration={5.3} />
+          </div>
           <h2 className="display-heading">
-            Your next review deserves a great reply.
+            Your next review deserves a thoughtful reply.
           </h2>
-          <MotionLink href="#top">
-            Back to top <ArrowUp aria-hidden="true" />
-          </MotionLink>
+          <div className="closing-actions">
+            <MotionLink href="/command-center">
+              Open demo <ArrowRight aria-hidden="true" />
+            </MotionLink>
+            <MotionLink href="#top" variant="outline">
+              Back to top <ArrowUp aria-hidden="true" />
+            </MotionLink>
+          </div>
         </section>
       </main>
 
       <footer className="site-footer">
         <div className="page-width footer-content">
           <Brand />
-          <p>Concept preview. Not affiliated with Google.</p>
+          <p>© 2026 Review Pulse. Not affiliated with Google.</p>
         </div>
       </footer>
     </div>
