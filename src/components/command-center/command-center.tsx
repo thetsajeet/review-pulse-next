@@ -93,12 +93,16 @@ function ActionButton({
   disabled,
   onClick,
   type = "button",
+  ariaExpanded,
+  ariaControls,
 }: {
   children: React.ReactNode;
   className?: string;
   disabled?: boolean;
   onClick?: () => void;
   type?: "button" | "submit";
+  ariaExpanded?: boolean;
+  ariaControls?: string;
 }) {
   const reducedMotion = useReducedMotion();
   return (
@@ -107,6 +111,8 @@ function ActionButton({
       className={cn(buttonVariants(), "workspace-button", className)}
       disabled={disabled}
       onClick={onClick}
+      aria-expanded={ariaExpanded}
+      aria-controls={ariaControls}
       whileHover={disabled || reducedMotion ? undefined : { scale: 0.98 }}
       transition={spring}
     >
@@ -243,7 +249,9 @@ function ReviewWorkspace({
   if (!detail) {
     return (
       <div className="workspace-empty" role="alert">
-        {error ?? "Review unavailable."}
+        <span className="workspace-empty-icon"><MessageSquare aria-hidden="true" /></span>
+        <strong>{error ? "Review unavailable" : "Something went wrong"}</strong>
+        <span>{error ?? "The review could not be loaded."}</span>
         <ActionButton onClick={() => { setError(null); setLoading(true); setReloadToken((value) => value + 1); }}>
           <RefreshCw /> Retry
         </ActionButton>
@@ -254,11 +262,24 @@ function ReviewWorkspace({
   return (
     <section className="workspace" aria-label={`Review trace for ${reviewerName(detail.review)}`}>
       <header className="workspace-header">
-        <h1>Review trace <span>·</span> {reviewerName(detail.review)}</h1>
-        <span>Google Maps · {detail.review.location.name}</span>
+        <div className="workspace-heading">
+          <h1>Review from <strong>{reviewerName(detail.review)}</strong></h1>
+          <p>{detail.review.location.name} <span>·</span> Google review</p>
+        </div>
+        <span className={cn("workspace-status", `workspace-status-${detail.review.status}`)}>
+          {detail.review.status === "pending"
+            ? "Awaiting your decision"
+            : detail.review.status === "approved"
+              ? "Approved in demo"
+              : "Draft withdrawn"}
+        </span>
       </header>
       <div className="workspace-body">
-        <p className="demo-note">Demo mode: decisions are saved locally and never sent to Google. AI drafts may contain inaccurate claims; review them carefully.</p>
+        <p className="demo-note">
+          <span className="demo-label">Demo</span>
+          Sample data only. Decisions are recorded in this prototype; replies
+          are not sent to Google.
+        </p>
         <ol className="trace-list">
           <li className="trace-item">
             <span className="trace-marker"><MessageSquare aria-hidden="true" /></span>
@@ -283,10 +304,15 @@ function ReviewWorkspace({
                 <span className={cn("trace-marker", event.type === "draft" && event.id === latestDraft?.id && "trace-marker-active")}>
                   {event.type === "draft" ? <Sparkles aria-hidden="true" /> : <MessageSquareText aria-hidden="true" />}
                 </span>
-                <article className="trace-card">
+                <article className={cn("trace-card", event.type === "draft" && event.id === latestDraft?.id && "trace-card-latest")}>
                   <div className="trace-card-heading">
                     <span>{event.type === "draft" ? `Agent draft v${event.version}` : "Human feedback"}</span>
-                    <time>{relativeTime(event.createdAt)}</time>
+                    <div className="trace-card-meta">
+                      {event.type === "draft" && event.id === latestDraft?.id && (
+                        <span className="draft-state">Latest draft</span>
+                      )}
+                      <time>{relativeTime(event.createdAt)}</time>
+                    </div>
                   </div>
                   <p className={event.type === "feedback" ? "feedback-content" : undefined}>{event.content}</p>
                   {event.type === "draft" && event.id === latestDraft?.id && (
@@ -304,13 +330,20 @@ function ReviewWorkspace({
                           <ActionButton className="reject-button" disabled={busy !== null} onClick={() => void decide("reject")}>
                             {busy === "rejecting" ? <LoaderCircle className="spin" /> : <X />} Reject
                           </ActionButton>
-                          <ActionButton className="outline-button" disabled={busy !== null} onClick={() => setRefactorOpen((open) => !open)}>
-                            <RefreshCw /> Refactor
+                          <ActionButton
+                            className="outline-button"
+                            disabled={busy !== null}
+                            ariaExpanded={refactorOpen}
+                            ariaControls={refactorOpen ? "refactor-form" : undefined}
+                            onClick={() => setRefactorOpen((open) => !open)}
+                          >
+                            <RefreshCw /> Refine draft
                           </ActionButton>
                         </div>
                         <AnimatePresence initial={false}>
                           {refactorOpen && (
                             <motion.form
+                              id="refactor-form"
                               className="refactor-form"
                               initial={reducedMotion ? false : { opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: "auto" }}
@@ -318,7 +351,7 @@ function ReviewWorkspace({
                               transition={spring}
                               onSubmit={(formEvent) => void refactor(formEvent)}
                             >
-                              <label htmlFor="refactor-instruction">Instructions for the agent</label>
+                              <label htmlFor="refactor-instruction">What would you like the agent to change?</label>
                               <textarea
                                 id="refactor-instruction"
                                 value={instruction}
@@ -331,7 +364,7 @@ function ReviewWorkspace({
                               <div className="refactor-actions">
                                 <ActionButton className="outline-button" disabled={busy !== null} onClick={() => setRefactorOpen(false)}>Cancel</ActionButton>
                                 <ActionButton type="submit" disabled={busy !== null || !instruction.trim()}>
-                                  {busy === "refactoring" ? <LoaderCircle className="spin" /> : <Send />} Send to agent
+                                  {busy === "refactoring" ? <LoaderCircle className="spin" /> : <Send />} Send instruction
                                 </ActionButton>
                               </div>
                             </motion.form>
@@ -411,14 +444,23 @@ export function CommandCenter() {
     if (selectedRef.current === reviewId) setFilter(status);
     void refresh();
   }
+  const locationName = reviews[0]?.location.name;
 
   return (
     <main className="command-center">
       <aside className="review-inbox" aria-label="Review inbox">
         <header className="inbox-header">
-          <Link className="inbox-brand" href="/"><Activity aria-hidden="true" /> Review Pulse</Link>
-          <Link className="back-link" href="/"><ArrowLeft aria-hidden="true" /> Home</Link>
-          <p>Review inbox <span>· Demo</span></p>
+          <div className="inbox-top">
+            <Link className="inbox-brand" href="/">
+              <span className="brand-mark"><Activity aria-hidden="true" /></span>
+              <span>Review Pulse</span>
+            </Link>
+            <Link className="back-link" href="/"><ArrowLeft aria-hidden="true" /> Home</Link>
+          </div>
+          <div className="inbox-heading">
+            <h1>Review inbox</h1>
+            <p>{locationName ?? "Demo workspace"}</p>
+          </div>
           <div className="inbox-filters" aria-label="Filter reviews by status">
             {filters.map(({ status, label, icon: Icon }) => (
               <button
@@ -464,7 +506,12 @@ export function CommandCenter() {
       {selectedId ? (
         <ReviewWorkspace key={selectedId} reviewId={selectedId} onDecision={onDecision} onNotice={setNotice} />
       ) : (
-        <div className="workspace-empty"><MessageSquare /><strong>Select a review</strong><span>Choose a pending review to generate an AI draft.</span></div>
+        <div className="workspace-empty">
+          <span className="workspace-empty-icon"><MessageSquare aria-hidden="true" /></span>
+          <strong>Choose a review to begin</strong>
+          <span>Read the customer&apos;s words, review the draft, and make the final call.</span>
+          <p className="workspace-empty-note">Select a pending review to ask the agent for a first draft.</p>
+        </div>
       )}
       <div className="toast-region" aria-live="polite">
         {notice && <div className="toast"><CircleCheck aria-hidden="true" /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X /></button></div>}

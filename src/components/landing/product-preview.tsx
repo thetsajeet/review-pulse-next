@@ -8,20 +8,21 @@ const reviews = [
 export function ProductPreview() {
   return (
     <figure className="product-preview" aria-labelledby="preview-caption">
-      <div className="preview-toolbar" aria-hidden="true">
-        <span /><span /><span />
+      <div className="preview-toolbar">
+        <span className="preview-toolbar-title">Brewhouse Koregaon Park</span>
+        <span className="preview-toolbar-context">Sample workspace</span>
       </div>
       <div className="preview-body">
         <div className="preview-inbox">
           <div className="preview-tabs">
             <span className="preview-status preview-status-pending">
-              <Clock3 aria-hidden="true" /> Pending <strong>4</strong>
+              <Clock3 aria-hidden="true" /> Pending
             </span>
             <span className="preview-status preview-status-approved">
-              <CircleCheck aria-hidden="true" /> Approved <strong>1</strong>
+              <CircleCheck aria-hidden="true" /> Approved
             </span>
             <span className="preview-status preview-status-rejected">
-              <CircleX aria-hidden="true" /> Rejected <strong>1</strong>
+              <CircleX aria-hidden="true" /> Rejected
             </span>
           </div>
           {reviews.map((review, index) => (
@@ -32,7 +33,13 @@ export function ProductPreview() {
                   <strong>{review.name}</strong><span>{review.time}</span>
                 </div>
                 <span className="preview-stars" aria-label={`${review.stars} out of 5 stars`}>
-                  {"★".repeat(review.stars)}<span>{"★".repeat(5 - review.stars)}</span>
+                  {Array.from({ length: 5 }, (_, starIndex) => (
+                    <Star
+                      key={starIndex}
+                      aria-hidden="true"
+                      className={starIndex < review.stars ? "star-filled" : ""}
+                    />
+                  ))}
                 </span>
                 <p>{review.snippet}</p>
               </div>
@@ -62,7 +69,7 @@ export function ProductPreview() {
             <div className="preview-actions" aria-hidden="true">
               <span><Check /> Approve</span>
               <span><X /> Reject</span>
-              <span><RefreshCw /> Refactor</span>
+              <span><RefreshCw /> Refine</span>
             </div>
           </li>
         </ol>
@@ -80,6 +87,7 @@ import {
   MessageSquareText,
   RefreshCw,
   Sparkles,
+  Star,
   X,
 } from "lucide-react";
 

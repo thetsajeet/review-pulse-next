@@ -140,6 +140,27 @@
   }
 }
 
+.brand-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.brand-mark svg {
+  width: 17px;
+  height: 17px;
+}
+
+::selection {
+  background: #dce8df;
+  color: #090a0b;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
