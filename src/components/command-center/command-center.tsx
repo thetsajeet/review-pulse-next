@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Activity,
   Check,
   ChevronDown,
   CircleCheck,
@@ -28,6 +27,7 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Review, ReviewStatus, StarRating, TimelineEvent } from "@/domain/reviews";
 import { buttonVariants } from "@/components/ui/button";
+import { BrandMark } from "@/components/illustrations/brand-mark";
 import { ReviewApiError, reviewApi } from "@/lib/review-api";
 import { cn } from "@/lib/utils";
 
@@ -476,7 +476,7 @@ export function CommandCenter() {
     <main className="command-center">
       <aside className="app-sidebar" aria-label="Primary navigation">
         <Link className="sidebar-brand" href="/">
-          <span className="sidebar-brand-mark"><Activity aria-hidden="true" /></span>
+          <BrandMark />
           <span className="sidebar-brand-copy">
             <strong>Review Pulse</strong>
             <small>{locationName ?? "Demo workspace"}</small>
@@ -511,7 +511,7 @@ export function CommandCenter() {
       <div className="command-main">
         <header className="app-topbar">
           <Link className="mobile-brand" href="/">
-            <span className="sidebar-brand-mark"><Activity aria-hidden="true" /></span>
+            <BrandMark />
             Review Pulse
           </Link>
           <div className="breadcrumb">

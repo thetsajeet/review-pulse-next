@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Activity, Check, LockKeyhole } from "lucide-react";
+import { Check, LockKeyhole } from "lucide-react";
 import { Cube } from "@/components/illustrations/cube";
+import { BrandMark } from "@/components/illustrations/brand-mark";
 import { MotionScope } from "@/components/illustrations/motion-scope";
 import "./auth-screen.css";
 
@@ -66,7 +67,7 @@ export function AuthScreen({ kind }: { kind: AuthScreenKind }) {
   return (
     <main className="auth-page">
       <div className="auth-main">
-        <Link className="auth-brand" href="/"><Activity aria-hidden="true" /><span>Review Pulse</span></Link>
+        <Link className="auth-brand" href="/"><BrandMark /><span>Review Pulse</span></Link>
         <section className="auth-content" aria-labelledby="auth-title">
           {kind === "signed-out" && <div className="auth-success"><Check aria-hidden="true" /> Signed out screen preview</div>}
           <h1 id="auth-title">{content.title}</h1>

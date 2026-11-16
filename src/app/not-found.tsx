@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Activity } from "lucide-react";
+import { BrandMark } from "@/components/illustrations/brand-mark";
 import { MotionScope } from "@/components/illustrations/motion-scope";
 import "./not-found.css";
 
@@ -9,7 +9,7 @@ export default function NotFound() {
     <main className="not-found-page">
       <header className="not-found-header">
         <Link href="/" className="not-found-brand">
-          <Activity aria-hidden="true" />
+          <BrandMark />
           <span>Review Pulse</span>
         </Link>
       </header>

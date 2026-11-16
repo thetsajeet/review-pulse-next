@@ -1,5 +1,4 @@
 import {
-  Activity,
   ArrowDown,
   ArrowRight,
   ArrowUp,
@@ -8,14 +7,13 @@ import {
 import { MotionLink } from "@/components/landing/motion-link";
 import { ProductPreview } from "@/components/landing/product-preview";
 import { CubeMark, WorkflowDiagram } from "@/components/landing/illustrations";
+import { BrandMark } from "@/components/illustrations/brand-mark";
 import "./landing.css";
 
 function Brand() {
   return (
     <a className="brand" href="#top" aria-label="Review Pulse home">
-      <span className="brand-mark">
-        <Activity aria-hidden="true" size={18} strokeWidth={2.2} />
-      </span>
+      <BrandMark />
       <span>Review Pulse</span>
     </a>
   );

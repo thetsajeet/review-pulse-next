@@ -1,8 +1,9 @@
 import Link from "next/link";
 import {
-  Activity, ArrowUpRight, LayoutDashboard, LogOut, MapPin, MessageSquare,
+  ArrowUpRight, LayoutDashboard, LogOut, MapPin, MessageSquare,
   PanelLeft, Search, Settings, Star,
 } from "lucide-react";
+import { BrandMark } from "@/components/illustrations/brand-mark";
 import "./dashboard.css";
 
 const bars = [
@@ -25,7 +26,7 @@ export default function DashboardPage() {
   return (
     <div className="dashboard">
       <aside className="dash-sidebar" aria-label="Primary navigation">
-        <Link className="dash-brand" href="/"><span className="dash-brand-mark"><Activity aria-hidden="true" /></span><span><strong>Review Pulse</strong><small>Demo workspace</small></span></Link>
+        <Link className="dash-brand" href="/"><BrandMark /><span><strong>Review Pulse</strong><small>Demo workspace</small></span></Link>
         <span className="dash-nav-label">Menu</span>
         <nav className="dash-nav">
           <Link className="dash-nav-link active" href="/dashboard" aria-current="page"><LayoutDashboard /><span>Dashboard</span></Link>

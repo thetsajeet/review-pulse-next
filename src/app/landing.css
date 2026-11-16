@@ -701,19 +701,6 @@
   text-transform: uppercase;
 }
 
-.brand-mark {
-  width: 23px;
-  height: 23px;
-  border: 0;
-  background: #18181b;
-  color: #fff;
-}
-
-.brand-mark svg {
-  width: 14px;
-  height: 14px;
-}
-
 .main-nav {
   gap: 26px;
 }

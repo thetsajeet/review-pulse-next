@@ -834,7 +834,7 @@
 
 .command-center {
   display: grid;
-  grid-template-columns: 188px minmax(0, 1fr);
+  grid-template-columns: 224px minmax(0, 1fr);
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
@@ -858,22 +858,6 @@
   padding: 2px 0;
   color: var(--foreground);
   text-decoration: none;
-}
-
-.sidebar-brand-mark {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  flex: none;
-  place-items: center;
-  border-radius: 11px;
-  background: #18181b;
-  color: #fff;
-}
-
-.sidebar-brand-mark svg {
-  width: 20px;
-  height: 20px;
 }
 
 .sidebar-brand-copy {
@@ -910,11 +894,8 @@
 .sidebar-label {
   margin: 28px 8px 10px;
   color: #71717a;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .sidebar-label-workspace {
@@ -935,7 +916,7 @@
   border: 1px solid transparent;
   border-radius: 9px;
   color: #52525b;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 550;
   text-decoration: none;
 }
@@ -976,9 +957,7 @@
   border: 1px solid var(--border);
   border-radius: 5px;
   color: #71717a;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
-  text-transform: uppercase;
+  font-size: 11px;
 }
 
 .sidebar-profile {
@@ -1014,12 +993,12 @@
 }
 
 .sidebar-profile strong {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .sidebar-profile small {
   color: #71717a;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .profile-menu {
@@ -1052,11 +1031,8 @@
   align-items: center;
   gap: 10px;
   color: #52525b;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
 }
 
 .breadcrumb svg {
@@ -1132,11 +1108,8 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   color: #3f3f46;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.035em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -1161,7 +1134,7 @@
   display: grid;
   min-width: 0;
   min-height: 0;
-  grid-template-columns: minmax(270px, 27%) minmax(0, 1fr) minmax(190px, 22%);
+  grid-template-columns: minmax(270px, 28%) minmax(0, 1fr) minmax(180px, 18%);
   gap: 12px;
   padding: 12px;
   overflow: hidden;
@@ -1191,8 +1164,7 @@
 }
 
 .inbox-title-row h1 {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.035em;
 }
@@ -1226,7 +1198,7 @@
   border-radius: 6px;
   background: transparent;
   color: #52525b;
-  font-size: 9px;
+  font-size: 11px;
   white-space: nowrap;
 }
 
@@ -1236,7 +1208,7 @@
 
 .inbox-filter b {
   color: #71717a;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .inbox-filter-active {
@@ -1260,21 +1232,22 @@
 .inbox-list {
   display: grid;
   align-content: start;
-  gap: 6px;
+  gap: 0;
   padding: 9px;
 }
 
 .inbox-review {
-  gap: 9px;
-  padding: 10px 9px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  gap: 10px;
+  padding: 12px 10px;
+  border: 1px solid transparent;
+  border-bottom-color: var(--border);
+  border-radius: 8px;
   background: #fff;
 }
 
 .inbox-review:hover,
 .inbox-review-selected {
-  background: #fff;
+  background: #f4f4f5;
 }
 
 .inbox-review:hover {
@@ -1299,11 +1272,11 @@
 
 .inbox-review-heading {
   align-items: baseline;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .inbox-review-heading time {
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .rating svg {
@@ -1312,7 +1285,7 @@
 }
 
 .review-snippet {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.45;
   -webkit-line-clamp: 2;
 }
@@ -1322,11 +1295,8 @@
   padding: 3px 6px;
   border: 1px solid;
   border-radius: 5px;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .review-status-pending {
@@ -1366,19 +1336,17 @@
 }
 
 .workspace-heading h1 {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .workspace-heading p {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .workspace-status {
   min-height: 26px;
   padding-inline: 8px;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
-  text-transform: uppercase;
+  font-size: 11px;
 }
 
 .workspace-body {
@@ -1391,7 +1359,7 @@
   margin-bottom: 17px;
   padding: 9px 10px;
   border-radius: 7px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .trace-list {
@@ -1424,21 +1392,22 @@
 }
 
 .trace-card-heading {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .trace-card-heading time {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .trace-card p {
   margin-top: 12px;
-  font-size: 13px;
-  line-height: 1.55;
+  max-width: 70ch;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 .trace-card .feedback-content {
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .workspace-actions {
@@ -1448,7 +1417,7 @@
 .workspace-button {
   min-height: 38px;
   padding-inline: 12px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .approve-button {
@@ -1474,7 +1443,6 @@
 }
 
 .details-panel h2 {
-  font-family: var(--font-geist-mono), monospace;
   font-size: 17px;
   font-weight: 700;
 }
@@ -1508,7 +1476,6 @@
 }
 
 .details-coming-soon strong {
-  font-family: var(--font-geist-mono), monospace;
   font-size: 13px;
   font-weight: 600;
 }
@@ -1548,7 +1515,7 @@
 
 @media (max-width: 900px) {
   .command-center {
-    grid-template-columns: 188px minmax(0, 1fr);
+    grid-template-columns: 224px minmax(0, 1fr);
   }
 
   .command-content {
@@ -1562,7 +1529,7 @@
 
   .breadcrumb {
     gap: 7px;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .global-search {
@@ -1572,7 +1539,7 @@
 
   .demo-indicator {
     padding-inline: 8px;
-    font-size: 8px;
+    font-size: 11px;
   }
 
   .topbar-status {
@@ -1617,17 +1584,6 @@
     font-weight: 700;
     text-decoration: none;
     text-transform: uppercase;
-  }
-
-  .mobile-brand .sidebar-brand-mark {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-  }
-
-  .mobile-brand .sidebar-brand-mark svg {
-    width: 16px;
-    height: 16px;
   }
 
   .breadcrumb {
@@ -1694,7 +1650,7 @@
 
   .demo-indicator {
     padding: 7px;
-    font-size: 7px;
+    font-size: 11px;
   }
 
   .toolbar-avatar {
@@ -1716,11 +1672,11 @@
     min-height: 29px;
     gap: 3px;
     padding-inline: 2px;
-    font-size: 8px;
+    font-size: 11px;
   }
 
   .inbox-filter b {
-    font-size: 8px;
+    font-size: 11px;
   }
 
   .inbox-list {
@@ -1758,7 +1714,7 @@
   .workspace-button {
     min-height: 38px;
     padding-inline: 9px;
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .toast-region {
