@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -133,7 +133,7 @@ function ReviewWorkspace({
   onNotice,
 }: {
   reviewId: string;
-  onDecision: (reviewId: string, status: "approved" | "rejected") => void;
+  onDecision: () => void;
   onNotice: (message: string) => void;
 }) {
   const [detail, setDetail] = useState<Detail | null>(null);
@@ -234,8 +234,8 @@ function ReviewWorkspace({
     setError(null);
     setBusy(action === "approve" ? "approving" : "rejecting");
     try {
-      const { decision: result } = await reviewApi.decide(reviewId, latestDraft.id, action);
-      onDecision(reviewId, result.status);
+      await reviewApi.decide(reviewId, latestDraft.id, action);
+      onDecision();
       onNotice(action === "approve" ? "Approved in demo. Nothing was sent to Google." : "Draft withdrawn in demo.");
       try {
         setDetail(await reviewApi.get(reviewId));
@@ -306,7 +306,7 @@ function ReviewWorkspace({
               <motion.li
                 key={event.id}
                 className="trace-item"
-                initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                initial={reducedMotion ? false : { opacity: 0, y: event.type === "draft" ? 16 : 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={spring}
               >
@@ -320,16 +320,24 @@ function ReviewWorkspace({
                       {event.type === "draft" && event.id === latestDraft?.id && (
                         <span className="draft-state">Latest draft</span>
                       )}
+                      {event.type === "draft" && event.id !== latestDraft?.id && (
+                        <span className="draft-state">Superseded</span>
+                      )}
                       <time>{relativeTime(event.createdAt)}</time>
                     </div>
                   </div>
                   <p>{event.content}</p>
                   {event.type === "draft" && event.id === latestDraft?.id && (
                     decision ? (
-                      <div className={cn("terminal-badge", `terminal-${decision.status}`)}>
+                      <motion.div
+                        className={cn("terminal-badge", `terminal-${decision.status}`)}
+                        initial={reducedMotion ? false : { y: 8, scale: 0.95, opacity: 0 }}
+                        animate={{ y: 0, scale: 1, opacity: 1 }}
+                        transition={spring}
+                      >
                         {decision.status === "approved" ? <CircleCheck /> : <CircleX />}
                         {decision.status === "approved" ? "Approved in demo · not sent" : "Draft withdrawn"}
-                      </div>
+                      </motion.div>
                     ) : (
                       <>
                         <div className="workspace-actions">
@@ -413,11 +421,11 @@ export function CommandCenter() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [filter, setFilter] = useState<ReviewStatus | "all">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selectedRef = useRef<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const reducedMotion = useReducedMotion();
 
   const refresh = useCallback(async () => {
     try {
@@ -441,17 +449,15 @@ export function CommandCenter() {
   }, []);
   useEffect(() => {
     if (!notice) return;
-    const timer = setTimeout(() => setNotice(null), 5000);
+    const timer = setTimeout(() => setNotice(null), 4000);
     return () => clearTimeout(timer);
   }, [notice]);
 
   function selectReview(id: string | null) {
-    selectedRef.current = id;
     setSelectedId(id);
   }
 
-  function onDecision(reviewId: string, status: "approved" | "rejected") {
-    if (selectedRef.current === reviewId) setFilter(status);
+  function onDecision() {
     void refresh();
   }
 
@@ -479,7 +485,7 @@ export function CommandCenter() {
         </Link>
         <span className="sidebar-label">Menu</span>
         <nav className="sidebar-nav">
-          <Link className="sidebar-link" href="/">
+          <Link className="sidebar-link" href="/dashboard">
             <LayoutDashboard aria-hidden="true" /><span>Dashboard</span>
           </Link>
           <Link className="sidebar-link sidebar-link-active" href="/command-center" aria-current="page">
@@ -575,7 +581,16 @@ export function CommandCenter() {
                         <span className="inbox-review-heading"><strong>{reviewerName(review)}</strong><time>{relativeTime(review.createTime)}</time></span>
                         <Stars rating={review.starRating} />
                         <span className="review-snippet">{review.comment || "No written review."}</span>
-                        <span className={cn("review-status", `review-status-${review.status}`)}>{review.status}</span>
+                        <AnimatePresence initial={false} mode="wait">
+                          <motion.span
+                            key={review.status}
+                            className={cn("review-status", `review-status-${review.status}`)}
+                            initial={reducedMotion ? false : { opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={reducedMotion ? undefined : { opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                          >{review.status}</motion.span>
+                        </AnimatePresence>
                       </span>
                     </button>
                   </li>
@@ -603,7 +618,9 @@ export function CommandCenter() {
         </div>
 
         <div className="toast-region" aria-live="polite">
-          {notice && <div className="toast"><CircleCheck aria-hidden="true" /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X /></button></div>}
+          <AnimatePresence initial={false}>
+            {notice && <motion.div key={notice} className="toast" initial={reducedMotion ? false : { y: -16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={reducedMotion ? undefined : { y: -8, opacity: 0 }} transition={spring}><CircleCheck aria-hidden="true" /> {notice}<button type="button" onClick={() => setNotice(null)} aria-label="Dismiss notification"><X /></button></motion.div>}
+          </AnimatePresence>
         </div>
       </div>
     </main>

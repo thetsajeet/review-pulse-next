@@ -1,0 +1,54 @@
+@keyframes cube-hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  10% { transform: translateY(0) scale(1.07, .9); }
+  35% { transform: translateY(-26px) scale(.96, 1.06); }
+  60% { transform: translateY(0) scale(1.08, .9); }
+  72% { transform: translateY(-6px) scale(.99, 1.02); }
+  85% { transform: translateY(0) scale(1, 1); }
+}
+
+@keyframes cube-bounce {
+  0%, 30%, 100% { transform: translateY(0) scale(1, 1); }
+  3% { transform: translateY(0) scale(1.07, .9); }
+  10% { transform: translateY(-30px) scale(.95, 1.07); }
+  18% { transform: translateY(0) scale(1.08, .9); }
+  22% { transform: translateY(-8px) scale(.98, 1.03); }
+  26% { transform: translateY(0) scale(1.02, .97); }
+}
+
+@keyframes cube-roll {
+  0%, 8% { transform: rotate(0); }
+  38%, 52% { transform: rotate(60deg); }
+  82%, 100% { transform: rotate(0); }
+}
+
+.cube-faces {
+  transform-origin: 65px 122px;
+}
+
+.cube-motion-hop .cube-faces {
+  animation: cube-hop 3.2s ease-in-out infinite;
+}
+
+.cube-motion-bounce .cube-faces {
+  animation: cube-bounce 8s cubic-bezier(.3, .6, .4, 1) infinite;
+}
+
+.cube-motion-roll .cube-faces {
+  transform-origin: 113.5px 94px;
+  animation: cube-roll 6s cubic-bezier(.5, 0, .3, 1) infinite;
+}
+
+.cube-motion-hop .cube-faces,
+.cube-motion-bounce .cube-faces,
+.cube-motion-roll .cube-faces {
+  animation-delay: var(--cube-delay, 0s);
+}
+
+[data-motion-visible="false"] .cube-faces {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cube-faces { animation: none !important; }
+}

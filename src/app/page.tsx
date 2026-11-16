@@ -30,6 +30,7 @@ export default function Home() {
           <a href="#workflow">Workflow</a>
           <a href="#features">Features</a>
           <a href="#control">Control</a>
+          <a href="/login">Log in</a>
         </nav>
         <MotionLink href="/command-center" size="small">
           Open demo
@@ -42,13 +43,11 @@ export default function Home() {
           <CubeMark
             className="hero-cube hero-cube-left"
             variant="star"
-            floatDuration={4.6}
           />
           <CubeMark
             className="hero-cube hero-cube-right"
             variant="check"
-            floatDelay={0.65}
-            floatDuration={5.2}
+            delay={1.4}
           />
           <div className="hero-copy">
             <h1 id="hero-title" className="display-heading hero-title">
@@ -119,7 +118,7 @@ export default function Home() {
             </article>
             <article className="feature-item feature-decision">
               <div className="feature-visual decision-visual" aria-hidden="true">
-                <CubeMark variant="check" floatDelay={0.3} />
+                <CubeMark variant="check" motion="none" />
                 <span><Check /> Approved in demo</span>
               </div>
               <div className="feature-copy">
@@ -159,18 +158,18 @@ export default function Home() {
               <svg className="control-art-lines" viewBox="0 0 360 230" preserveAspectRatio="none">
                 <path d="M78 56 L180 164 L282 47" />
               </svg>
-              <CubeMark variant="pin" floatDuration={5.4} />
-              <CubeMark variant="check" floatDelay={0.45} floatDuration={4.8} />
-              <CubeMark variant="lock" floatDelay={0.9} floatDuration={5.1} />
+              <CubeMark variant="pin" />
+              <CubeMark variant="check" delay={0.9} />
+              <CubeMark variant="lock" delay={1.8} />
             </div>
           </div>
         </section>
 
         <section className="closing page-width">
           <div className="closing-cubes" aria-hidden="true">
-            <CubeMark variant="star" floatDuration={4.4} />
-            <CubeMark variant="spark" floatDelay={0.35} floatDuration={4.9} />
-            <CubeMark variant="check" floatDelay={0.7} floatDuration={5.3} />
+            <CubeMark variant="star" motion="roll" />
+            <CubeMark variant="spark" motion="roll" delay={1} />
+            <CubeMark variant="check" motion="roll" delay={2} />
           </div>
           <h2 className="display-heading">
             Your next review deserves a thoughtful reply.

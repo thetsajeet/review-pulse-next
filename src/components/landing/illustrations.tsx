@@ -1,114 +1,83 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
-import { motion, useInView, useReducedMotion } from "motion/react";
-
-const cubes = {
-  star: { src: "/assets/cubes/cube-star-amber.svg", tone: "gold" },
-  spark: { src: "/assets/cubes/cube-spark-ink.svg", tone: "ink" },
-  check: { src: "/assets/cubes/cube-check-emerald.svg", tone: "mint" },
-  pin: { src: "/assets/cubes/cube-pin-white.svg", tone: "paper" },
-  lock: { src: "/assets/cubes/cube-lock-ink.svg", tone: "ink" },
-} as const;
-
-type CubeVariant = keyof typeof cubes;
+import { useRef, useSyncExternalStore } from "react";
+import { useInView } from "motion/react";
+import { Cube, type CubeVariant } from "@/components/illustrations/cube";
 
 const stages = [
-  { title: "Review arrives", variant: "star" as const },
-  { title: "Pulse drafts", variant: "spark" as const },
-  { title: "You refine", variant: "check" as const },
-  { title: "You decide", variant: "pin" as const },
+  { title: "Review arrives", variant: "star" },
+  { title: "Pulse drafts", variant: "spark" },
+  { title: "You refine", variant: "check" },
+  { title: "You decide", variant: "pin" },
+] as const;
+
+const tones: Record<CubeVariant, string> = {
+  star: "gold", spark: "ink", check: "mint", pin: "paper", lock: "ink",
+};
+
+const connectors = [
+  { path: "M195 50 C267.5 50 267.5 78 340 78", start: [195, 50], end: [340, 78], delay: "1s" },
+  { path: "M430 78 C500 78 500 24 570 24", start: [430, 78], end: [570, 24], delay: "3s" },
+  { path: "M660 24 C732.5 24 732.5 57 805 57", start: [660, 24], end: [805, 57], delay: "5s" },
 ];
+
+function subscribeToMotionPreference(onChange: () => void) {
+  const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
 export function CubeMark({
   className = "",
   variant,
-  floatDelay = 0,
-  floatDuration = 4.8,
+  motion = "hop",
+  delay = 0,
 }: {
   className?: string;
   variant: CubeVariant;
-  floatDelay?: number;
-  floatDuration?: number;
+  motion?: "hop" | "bounce" | "roll" | "none";
+  delay?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: false });
-  const reducedMotion = useReducedMotion();
-  const shouldFloat = inView && !reducedMotion;
-  const cube = cubes[variant];
-
+  const inView = useInView(ref);
   return (
-    <motion.div
-      ref={ref}
-      className={`cube-mark cube-${cube.tone} ${className}`}
-      aria-hidden="true"
-      initial={false}
-      animate={shouldFloat ? { y: [0, -7, 0] } : { y: 0 }}
-      transition={
-        shouldFloat
-          ? {
-              duration: floatDuration,
-              delay: floatDelay,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }
-          : { duration: 0.2 }
-      }
-    >
-      <Image src={cube.src} alt="" width={130} height={150} />
-    </motion.div>
+    <div ref={ref} className={`cube-mark cube-${tones[variant]} cube-motion-${motion} ${className}`} data-motion-visible={inView} style={{ "--cube-delay": `${delay}s` } as React.CSSProperties} aria-hidden="true">
+      <Cube variant={variant} />
+    </div>
   );
 }
 
 export function WorkflowDiagram() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref);
-  const reducedMotion = useReducedMotion();
-  const shouldAnimate = inView && !reducedMotion;
-
+  const reducedMotion = useSyncExternalStore(subscribeToMotionPreference, prefersReducedMotion, () => true);
   return (
-    <section
-      id="workflow"
-      className="workflow-section page-width"
-      aria-label="Review reply workflow"
-    >
-      <div ref={ref} className="workflow-connector" aria-hidden="true">
+    <section id="workflow" className="workflow-section page-width" aria-label="Review reply workflow">
+      <div ref={ref} className="workflow-connector" data-motion-visible={inView} aria-hidden="true">
         <svg viewBox="0 0 1000 100" preserveAspectRatio="none">
-          <path d="M150 50 L385 78 L615 24 L850 57" />
+          {connectors.map(({ path, start, end, delay }) => (
+            <g key={path}>
+              <path className="workflow-dash" d={path} />
+              <circle cx={start[0]} cy={start[1]} r="4" fill="#fff" stroke="#18181b" strokeWidth="1.5" />
+              <circle cx={end[0]} cy={end[1]} r="4" fill="#18181b" />
+              {inView && !reducedMotion && (
+                <circle r="7" fill="#10b981" stroke="#18181b" strokeWidth="1.5" opacity="0">
+                  <animateMotion path={path} dur="8s" repeatCount="indefinite" begin={delay} keyPoints="0;1;1" keyTimes="0;.22;1" calcMode="linear" />
+                  <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;.22;.25;1" dur="8s" repeatCount="indefinite" begin={delay} />
+                </circle>
+              )}
+            </g>
+          ))}
         </svg>
-        <motion.span
-          className="workflow-runner"
-          style={{ left: "22%", top: "58%" }}
-          animate={
-            shouldAnimate
-              ? {
-                  left: ["22%", "38.5%", "61.5%", "82%"],
-                  top: ["58%", "78%", "24%", "53%"],
-                }
-              : { left: "22%", top: "58%" }
-          }
-          transition={
-            shouldAnimate
-              ? {
-                  duration: 5.5,
-                  ease: "linear",
-                  times: [0, 0.29, 0.71, 1],
-                  repeat: Infinity,
-                  repeatType: "loop",
-                }
-              : { duration: 0 }
-          }
-        />
       </div>
       <ol className="workflow-stages">
         {stages.map((stage, index) => (
           <li key={stage.title}>
-            <CubeMark
-              variant={stage.variant}
-              floatDelay={index * 0.18}
-              floatDuration={4.5 + index * 0.25}
-            />
+            <CubeMark variant={stage.variant} motion="bounce" delay={index * 2} />
             <span className="workflow-step">{String(index + 1).padStart(2, "0")}</span>
             <strong>{stage.title}</strong>
           </li>

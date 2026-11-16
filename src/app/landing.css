@@ -804,11 +804,11 @@
   overflow: visible;
 }
 
-.cube-mark img {
+.cube-mark svg {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  overflow: visible;
 }
 
 .workflow-section {
@@ -1445,24 +1445,20 @@
 }
 
 .workflow-connector path {
-  stroke: #a1a1aa;
-  stroke-dasharray: 3 7;
+  stroke: #18181b;
+  stroke-dasharray: 3 6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 1.5;
+  animation: workflow-dashes 1.2s linear infinite;
 }
 
-.workflow-runner {
-  position: absolute;
-  z-index: 1;
-  display: block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #18b981;
-  box-shadow: 0 0 0 2px rgb(24 185 129 / 22%);
-  transform: translate(-50%, -50%);
+@keyframes workflow-dashes {
+  to { stroke-dashoffset: -18; }
+}
+
+.workflow-connector[data-motion-visible="false"] path {
+  animation-play-state: paused;
 }
 
 .workflow-stages li:nth-child(2) {
@@ -1525,6 +1521,10 @@
   .hero-cube {
     width: 62px;
     height: 70px;
+  }
+
+  @media (max-width: 1100px) {
+    .hero-cube { display: none; }
   }
 
   .hero-cube-left {
@@ -1682,6 +1682,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .workflow-connector path { animation: none; }
   .landing-page {
     scroll-behavior: auto;
   }

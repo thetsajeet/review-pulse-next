@@ -20,6 +20,15 @@ feedback to refactor it. Approve or reject records a local demo decision only;
 nothing is published to Google. AI drafts can contain inaccurate or unsupported
 claims, so review them carefully.
 
+The `/login`, `/signup`, and `/signed-out` routes preview the authentication
+screens; Google sign-in and sign-out are not connected. `/dashboard` shows
+illustrative metrics rather than live review analytics. Its inbox link opens
+the existing review demo.
+
+Decorative cube and workflow animations follow `resources/animations.md` and
+pause outside the viewport. Reduced-motion preferences disable decorative
+motion; the dashboard remains static.
+
 Run `bun test`,
 `bun run lint`, and `bun run build` to validate changes.
 

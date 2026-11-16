@@ -26,7 +26,7 @@ export function MotionLink({
         "landing-button-small": size === "small",
       })}
       whileHover={reducedMotion ? undefined : { scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      transition={{ duration: 0.15 }}
     >
       {children}
     </motion.a>
