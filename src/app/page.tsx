@@ -31,7 +31,7 @@ export default function Home() {
           <a href="/login">Log in</a>
         </nav>
         <MotionLink href="/command-center" size="small">
-          Open demo
+          Open workspace
           <ArrowRight aria-hidden="true" />
         </MotionLink>
       </header>
@@ -59,7 +59,7 @@ export default function Home() {
             </p>
             <div className="hero-actions">
               <MotionLink href="/command-center">
-                Open demo <ArrowRight aria-hidden="true" />
+                Open workspace <ArrowRight aria-hidden="true" />
               </MotionLink>
               <MotionLink href="#workflow" variant="outline">
                 See the workflow <ArrowDown aria-hidden="true" />
@@ -117,7 +117,7 @@ export default function Home() {
             <article className="feature-item feature-decision">
               <div className="feature-visual decision-visual" aria-hidden="true">
                 <CubeMark variant="check" motion="none" />
-                <span><Check /> Approved in demo</span>
+                <span><Check /> Approved</span>
               </div>
               <div className="feature-copy">
                 <h3>Your decision, recorded</h3>
@@ -144,7 +144,7 @@ export default function Home() {
               <h2 className="display-heading">Pulse writes. You decide.</h2>
               <p>
                 Nothing reaches a customer on its own. Every reply waits for a
-                person, and every demo decision stays with its review.
+                person, and every decision stays with its review.
               </p>
               <ul className="control-list">
                 <li><Check aria-hidden="true" /> Drafts wait for your action</li>
@@ -174,7 +174,7 @@ export default function Home() {
           </h2>
           <div className="closing-actions">
             <MotionLink href="/command-center">
-              Open demo <ArrowRight aria-hidden="true" />
+              Open workspace <ArrowRight aria-hidden="true" />
             </MotionLink>
             <MotionLink href="#top" variant="outline">
               Back to top <ArrowUp aria-hidden="true" />

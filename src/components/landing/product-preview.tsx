@@ -14,7 +14,7 @@ export function ProductPreview() {
       </div>
       <div className="preview-toolbar">
         <span className="preview-toolbar-title">Brewhouse Koregaon Park <span>/</span> Review inbox</span>
-        <span className="preview-toolbar-context"><i /> Demo workspace</span>
+        <span className="preview-toolbar-context"><i /> Workspace</span>
       </div>
       <div className="preview-body">
         <div className="preview-inbox">

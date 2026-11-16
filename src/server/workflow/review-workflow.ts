@@ -98,7 +98,7 @@ export function createReviewWorkflow(
       return { candidate, validationError };
     })
     .addNode("save", async (state) => {
-      if (!state.review || !state.candidate || state.validationError) {
+      if (!state.review || !state.sentiment || !state.candidate || state.validationError) {
         throw new DraftWorkflowError("Cannot save an invalid draft.");
       }
       const createdAt = new Date().toISOString();
@@ -111,7 +111,15 @@ export function createReviewWorkflow(
         createdAt,
       };
       const events: TimelineEvent[] = [];
-      if (state.instruction !== null) {
+      if (state.instruction === null) {
+        events.push({
+          type: "analysis",
+          id: randomUUID(),
+          reviewId: state.reviewId,
+          analysis: state.sentiment,
+          createdAt,
+        });
+      } else {
         events.push({
           type: "feedback",
           id: randomUUID(),

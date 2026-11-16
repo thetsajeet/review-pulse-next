@@ -34,7 +34,7 @@ describe("review workflow", () => {
     expect(first.version).toBe(1);
     expect(second.version).toBe(2);
     expect((await repository.getTimeline("review-marcus")).map((event) => event.type)).toEqual([
-      "draft", "feedback", "draft",
+      "analysis", "draft", "feedback", "draft",
     ]);
     expect(model.inputs[1].history.map((message) => message.text)).toEqual([
       JSON.stringify({ starRating: "TWO", comment: mockReviews[0].comment }),
@@ -47,6 +47,8 @@ describe("review workflow", () => {
     const priya = await workflow.getConversation("review-priya");
     expect(marcus.threadId).not.toBe(priya.threadId);
     expect(marcus.sentiment).toEqual(sentiment);
+    expect((await repository.get("review-marcus")).sentiment).toEqual(sentiment);
+    expect((await repository.getTimeline("review-marcus"))[0].analysis).toEqual(sentiment);
     expect(marcus.turns.map((turn) => turn.content)).toEqual([
       JSON.stringify({ starRating: "TWO", comment: mockReviews[0].comment }),
       "First response.",
@@ -65,7 +67,7 @@ describe("review workflow", () => {
     expect(result.content).toBe("Short response.");
     expect(model.inputs).toHaveLength(2);
     expect(model.inputs[1].validationError).toContain("4096 UTF-8 bytes");
-    expect(await repository.getTimeline("review-marcus")).toHaveLength(1);
+    expect(await repository.getTimeline("review-marcus")).toHaveLength(2);
   });
 
   test("surfaces validation failure without storing a draft and can retry later", async () => {
@@ -86,11 +88,11 @@ describe("review workflow", () => {
     const workflow = createReviewWorkflow(repository, model);
     await workflow.generate("review-marcus");
     await expect(workflow.refactor("review-marcus", "Be warmer.")).rejects.toThrow("Provider unavailable");
-    expect(await repository.getTimeline("review-marcus")).toHaveLength(1);
+    expect(await repository.getTimeline("review-marcus")).toHaveLength(2);
     expect((await workflow.getConversation("review-marcus")).turns).toHaveLength(2);
     expect((await workflow.refactor("review-marcus", "Be warmer.")).version).toBe(2);
     expect((await repository.getTimeline("review-marcus")).map((event) => event.type)).toEqual([
-      "draft", "feedback", "draft",
+      "analysis", "draft", "feedback", "draft",
     ]);
   });
 
@@ -112,7 +114,7 @@ describe("review workflow", () => {
     const conversation = await workflow.getConversation("review-marcus");
     expect(conversation.sentiment).toEqual(sentiment);
     expect(conversation.turns).toHaveLength(2);
-    expect(await repository.getTimeline("review-marcus")).toHaveLength(1);
+    expect(await repository.getTimeline("review-marcus")).toHaveLength(2);
   });
 
   test("rejects concurrent runs for the same review", async () => {

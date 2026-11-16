@@ -16,14 +16,14 @@ bun run dev
 Set `GEMINI_API_KEY` in `.env.local` (see `.env.example`) before generating
 drafts. Open [http://localhost:3000/command-center](http://localhost:3000/command-center),
 select a pending review to generate its first draft, and optionally provide
-feedback to refactor it. Approve or reject records a local demo decision only;
+feedback to refactor it. Approve or reject records a local decision only;
 nothing is published to Google. AI drafts can contain inaccurate or unsupported
 claims, so review them carefully.
 
 The `/login`, `/signup`, and `/signed-out` routes preview the authentication
 screens; Google sign-in and sign-out are not connected. `/dashboard` shows
 illustrative metrics rather than live review analytics. Its inbox link opens
-the existing review demo.
+the review inbox.
 
 Decorative cube and workflow animations follow `resources/animations.md` and
 pause outside the viewport. Reduced-motion preferences disable decorative
@@ -36,12 +36,14 @@ Run `bun test`,
 
 `src/domain` defines reviews, timeline events, and the asynchronous repository
 contract. `src/server/reviews` provides a seeded in-memory implementation and
-the current repository instance. The adapter records ordered draft, feedback,
-and decision events; decisions atomically update the review status. Draft
+the current repository instance. The adapter records ordered analysis, draft,
+feedback, and decision events; decisions atomically update the review status. Draft
 versions are sequential, feedback requires a draft, and a decision must refer
-to the latest version. Decisions are terminal in this demo. Missing reviews
+to the latest version. Decisions are terminal. Missing reviews
 and invalid timeline events produce explicit errors. Seeded reviews have no
-AI-generated drafts.
+AI-generated drafts or sentiment. Initial analysis is saved atomically with
+the first draft and exposed on the review and in its timeline; sentiment is
+not inferred from star ratings.
 
 The review model follows the
 [Google Business Profile Review resource](https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews):

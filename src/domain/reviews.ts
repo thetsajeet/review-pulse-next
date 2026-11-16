@@ -1,3 +1,5 @@
+import type { SentimentAnalysis } from "./draft-workflow";
+
 export type ReviewStatus = "pending" | "approved" | "rejected";
 export type StarRating =
   | "STAR_RATING_UNSPECIFIED"
@@ -49,6 +51,7 @@ export interface Review extends GoogleBusinessProfileReview {
     name: string;
   };
   status: ReviewStatus;
+  sentiment?: SentimentAnalysis;
 }
 
 interface TimelineEventBase {
@@ -68,10 +71,15 @@ export interface HumanFeedback extends TimelineEventBase {
   content: string;
 }
 
+export interface ReviewAnalysis extends TimelineEventBase {
+  type: "analysis";
+  analysis: SentimentAnalysis;
+}
+
 export interface ReviewDecision extends TimelineEventBase {
   type: "decision";
   draftId: string;
   status: Exclude<ReviewStatus, "pending">;
 }
 
-export type TimelineEvent = DraftVersion | HumanFeedback | ReviewDecision;
+export type TimelineEvent = DraftVersion | HumanFeedback | ReviewAnalysis | ReviewDecision;

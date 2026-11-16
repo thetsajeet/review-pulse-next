@@ -2,22 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Check,
-  ChevronDown,
   CircleCheck,
   CircleX,
   Clock3,
   Inbox,
-  LayoutDashboard,
   LockKeyhole,
   LoaderCircle,
-  MapPin,
   MessageSquare,
   MessageSquareText,
-  Search,
-  Settings,
   RefreshCw,
   Send,
   Sparkles,
@@ -27,7 +21,7 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Review, ReviewStatus, StarRating, TimelineEvent } from "@/domain/reviews";
 import { buttonVariants } from "@/components/ui/button";
-import { BrandMark } from "@/components/illustrations/brand-mark";
+import { useWorkspaceSearch } from "@/components/workspace/workspace-shell";
 import { ReviewApiError, reviewApi } from "@/lib/review-api";
 import { cn } from "@/lib/utils";
 
@@ -129,11 +123,11 @@ function ActionButton({
 
 function ReviewWorkspace({
   reviewId,
-  onDecision,
+  onReviewUpdate,
   onNotice,
 }: {
   reviewId: string;
-  onDecision: () => void;
+  onReviewUpdate: () => void;
   onNotice: (message: string) => void;
 }) {
   const [detail, setDetail] = useState<Detail | null>(null);
@@ -167,7 +161,10 @@ function ReviewWorkspace({
           if (!current.timeline.some((event) => event.type === "draft")) throw generationError;
         }
         current = await reviewApi.get(reviewId);
-        if (active) setDetail(current);
+        if (active) {
+          setDetail(current);
+          onReviewUpdate();
+        }
       } catch (loadError) {
         if (active) setError(messageOf(loadError));
       } finally {
@@ -179,7 +176,7 @@ function ReviewWorkspace({
     }
     void load();
     return () => { active = false; };
-  }, [reviewId, reloadToken]);
+  }, [reviewId, reloadToken, onReviewUpdate]);
 
   const latestDraft = detail?.timeline.filter((event) => event.type === "draft").at(-1);
   const decision = detail?.timeline.find((event) => event.type === "decision");
@@ -190,6 +187,7 @@ function ReviewWorkspace({
     try {
       await reviewApi.generate(reviewId);
       setDetail(await reviewApi.get(reviewId));
+      onReviewUpdate();
     } catch (retryError) {
       if (retryError instanceof ReviewApiError && retryError.status === 409) {
         try {
@@ -234,9 +232,13 @@ function ReviewWorkspace({
     setError(null);
     setBusy(action === "approve" ? "approving" : "rejecting");
     try {
-      await reviewApi.decide(reviewId, latestDraft.id, action);
-      onDecision();
-      onNotice(action === "approve" ? "Approved in demo. Nothing was sent to Google." : "Draft withdrawn in demo.");
+      const { decision: savedDecision } = await reviewApi.decide(reviewId, latestDraft.id, action);
+      setDetail((current) => current && ({
+        review: { ...current.review, status: savedDecision.status },
+        timeline: [...current.timeline, savedDecision],
+      }));
+      onReviewUpdate();
+      onNotice(action === "approve" ? "Approved. Nothing was sent to Google." : "Draft rejected.");
       try {
         setDetail(await reviewApi.get(reviewId));
       } catch {
@@ -279,15 +281,13 @@ function ReviewWorkspace({
           {detail.review.status === "pending"
             ? "Awaiting your decision"
             : detail.review.status === "approved"
-              ? "Approved in demo"
-              : "Draft withdrawn"}
+              ? "Approved"
+              : "Rejected"}
         </span>
       </header>
       <div className="workspace-body">
         <p className="demo-note">
-          <span className="demo-label">Demo</span>
-          Sample data only. Decisions are recorded in this prototype; replies
-          are not sent to Google.
+          Sample reviews. Decisions are recorded here; replies are not sent to Google.
         </p>
         <ol className="trace-list">
           <li className="trace-item">
@@ -302,7 +302,7 @@ function ReviewWorkspace({
             </article>
           </li>
           <AnimatePresence initial={false}>
-            {detail.timeline.filter((event) => event.type !== "decision").map((event) => (
+            {detail.timeline.map((event) => (
               <motion.li
                 key={event.id}
                 className="trace-item"
@@ -311,11 +311,11 @@ function ReviewWorkspace({
                 transition={spring}
               >
                 <span className={cn("trace-marker", event.type === "draft" && event.id === latestDraft?.id && "trace-marker-active")}>
-                  {event.type === "draft" ? <Sparkles aria-hidden="true" /> : <MessageSquareText aria-hidden="true" />}
+                  {event.type === "draft" || event.type === "analysis" ? <Sparkles aria-hidden="true" /> : event.type === "decision" ? (event.status === "approved" ? <CircleCheck aria-hidden="true" /> : <CircleX aria-hidden="true" />) : <MessageSquareText aria-hidden="true" />}
                 </span>
                 <article className={cn("trace-card", event.type === "feedback" && "trace-card-feedback", event.type === "draft" && event.id === latestDraft?.id && "trace-card-latest")}>
                   <div className="trace-card-heading">
-                    <span>{event.type === "draft" ? `Agent draft v${event.version}` : "Human feedback"}</span>
+                    <span>{event.type === "draft" ? `Agent draft v${event.version}` : event.type === "analysis" ? "Sentiment analysis" : event.type === "decision" ? (event.status === "approved" ? "Approved" : "Rejected") : "Human feedback"}</span>
                     <div className="trace-card-meta">
                       {event.type === "draft" && event.id === latestDraft?.id && (
                         <span className="draft-state">Latest draft</span>
@@ -326,19 +326,12 @@ function ReviewWorkspace({
                       <time>{relativeTime(event.createdAt)}</time>
                     </div>
                   </div>
-                  <p>{event.content}</p>
-                  {event.type === "draft" && event.id === latestDraft?.id && (
-                    decision ? (
-                      <motion.div
-                        className={cn("terminal-badge", `terminal-${decision.status}`)}
-                        initial={reducedMotion ? false : { y: 8, scale: 0.95, opacity: 0 }}
-                        animate={{ y: 0, scale: 1, opacity: 1 }}
-                        transition={spring}
-                      >
-                        {decision.status === "approved" ? <CircleCheck /> : <CircleX />}
-                        {decision.status === "approved" ? "Approved in demo · not sent" : "Draft withdrawn"}
-                      </motion.div>
-                    ) : (
+                  {event.type === "analysis" ? (
+                    <><span className={cn("sentiment-tag", `sentiment-${event.analysis.sentiment}`)}>{event.analysis.sentiment}</span><p>{event.analysis.summary}</p>{event.analysis.themes.length > 0 && <p className="sentiment-themes">Topics: {event.analysis.themes.join(", ")}</p>}</>
+                  ) : event.type === "decision" ? (
+                    <p>{event.status === "approved" ? "Decision recorded. This reply was not sent to Google." : "Draft rejected."}</p>
+                  ) : <p>{event.content}</p>}
+                  {event.type === "draft" && event.id === latestDraft?.id && !decision && detail.review.status === "pending" && (
                       <>
                         <div className="workspace-actions">
                           <ActionButton className="approve-button" disabled={busy !== null} onClick={() => void decide("approve")}>
@@ -388,7 +381,6 @@ function ReviewWorkspace({
                           )}
                         </AnimatePresence>
                       </>
-                    )
                   )}
                 </article>
               </motion.li>
@@ -424,7 +416,7 @@ export function CommandCenter() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { query: searchQuery } = useWorkspaceSearch();
   const reducedMotion = useReducedMotion();
 
   const refresh = useCallback(async () => {
@@ -457,10 +449,6 @@ export function CommandCenter() {
     setSelectedId(id);
   }
 
-  function onDecision() {
-    void refresh();
-  }
-
   const filteredReviews = reviews.filter((review) => {
     const matchesStatus = filter === "all" || review.status === filter;
     const query = searchQuery.trim().toLocaleLowerCase();
@@ -470,70 +458,9 @@ export function CommandCenter() {
       (review.comment ?? "").toLocaleLowerCase().includes(query);
     return matchesStatus && matchesQuery;
   });
-  const locationName = reviews[0]?.location.name;
-
   return (
     <main className="command-center">
-      <aside className="app-sidebar" aria-label="Primary navigation">
-        <Link className="sidebar-brand" href="/">
-          <BrandMark />
-          <span className="sidebar-brand-copy">
-            <strong>Review Pulse</strong>
-            <small>{locationName ?? "Demo workspace"}</small>
-          </span>
-          <ChevronDown className="sidebar-brand-chevron" aria-hidden="true" />
-        </Link>
-        <span className="sidebar-label">Menu</span>
-        <nav className="sidebar-nav">
-          <Link className="sidebar-link" href="/dashboard">
-            <LayoutDashboard aria-hidden="true" /><span>Dashboard</span>
-          </Link>
-          <Link className="sidebar-link sidebar-link-active" href="/command-center" aria-current="page">
-            <MessageSquare aria-hidden="true" /><span>Reviews</span><b>{reviews.length}</b>
-          </Link>
-          <span className="sidebar-link sidebar-link-disabled" aria-disabled="true">
-            <MapPin aria-hidden="true" /><span>Locations</span><small>Soon</small>
-          </span>
-        </nav>
-        <span className="sidebar-label sidebar-label-workspace">Workspace</span>
-        <nav className="sidebar-nav">
-          <span className="sidebar-link sidebar-link-disabled" aria-disabled="true">
-            <Settings aria-hidden="true" /><span>Settings</span><small>Soon</small>
-          </span>
-        </nav>
-        <div className="sidebar-profile">
-          <span className="profile-initials">DP</span>
-          <span><strong>Demo owner</strong><small>Profile preview</small></span>
-          <span className="profile-menu" aria-hidden="true">···</span>
-        </div>
-      </aside>
-
       <div className="command-main">
-        <header className="app-topbar">
-          <Link className="mobile-brand" href="/">
-            <BrandMark />
-            Review Pulse
-          </Link>
-          <div className="breadcrumb">
-            <Inbox aria-hidden="true" />
-            <span>Reviews</span><b>/</b><strong>Inbox</strong>
-          </div>
-          <label className="global-search">
-            <Search aria-hidden="true" />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search reviews"
-              aria-label="Search reviews"
-            />
-          </label>
-          <div className="topbar-status">
-            <span className="demo-indicator"><i /> Demo mode</span>
-            <span className="toolbar-avatar" aria-label="Demo owner">DP</span>
-          </div>
-        </header>
-
         <div className="command-content">
           <section className="review-inbox" aria-label="Review inbox">
             <header className="inbox-header">
@@ -581,6 +508,7 @@ export function CommandCenter() {
                         <span className="inbox-review-heading"><strong>{reviewerName(review)}</strong><time>{relativeTime(review.createTime)}</time></span>
                         <Stars rating={review.starRating} />
                         <span className="review-snippet">{review.comment || "No written review."}</span>
+                        <span className={cn("sentiment-tag", review.sentiment && `sentiment-${review.sentiment.sentiment}`)}>{review.sentiment ? review.sentiment.sentiment : "Awaiting analysis"}</span>
                         <AnimatePresence initial={false} mode="wait">
                           <motion.span
                             key={review.status}
@@ -599,7 +527,7 @@ export function CommandCenter() {
             )}
           </section>
           {selectedId ? (
-            <ReviewWorkspace key={selectedId} reviewId={selectedId} onDecision={onDecision} onNotice={setNotice} />
+            <ReviewWorkspace key={selectedId} reviewId={selectedId} onReviewUpdate={refresh} onNotice={setNotice} />
           ) : (
             <div className="workspace-empty">
               <span className="workspace-empty-icon"><MessageSquare aria-hidden="true" /></span>

@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowUpRight, LayoutDashboard, LogOut, MapPin, MessageSquare,
-  PanelLeft, Search, Settings, Star,
-} from "lucide-react";
-import { BrandMark } from "@/components/illustrations/brand-mark";
-import "./dashboard.css";
+import { ArrowUpRight, Star } from "lucide-react";
 
 const bars = [
   [8, 3, 1], [6, 2, 0], [9, 3, 2], [7, 2, 1], [10, 4, 1],
@@ -24,25 +19,7 @@ function Sparkline({ points }: { points: string }) {
 
 export default function DashboardPage() {
   return (
-    <div className="dashboard">
-      <aside className="dash-sidebar" aria-label="Primary navigation">
-        <Link className="dash-brand" href="/"><BrandMark /><span><strong>Review Pulse</strong><small>Demo workspace</small></span></Link>
-        <span className="dash-nav-label">Menu</span>
-        <nav className="dash-nav">
-          <Link className="dash-nav-link active" href="/dashboard" aria-current="page"><LayoutDashboard /><span>Dashboard</span></Link>
-          <Link className="dash-nav-link" href="/command-center"><MessageSquare /><span>Reviews</span></Link>
-          <span className="dash-nav-link unavailable"><MapPin /><span>Locations</span><small>Soon</small></span>
-        </nav>
-        <span className="dash-nav-label">Workspace</span>
-        <nav className="dash-nav"><span className="dash-nav-link unavailable"><Settings /><span>Settings</span><small>Soon</small></span></nav>
-        <div className="dash-profile"><span className="dash-avatar">DP</span><span><strong>Demo owner</strong><small>Profile preview</small></span><Link href="/signed-out" aria-label="View signed out screen preview"><LogOut /></Link></div>
-      </aside>
       <main className="dash-main">
-        <header className="dash-topbar">
-          <div className="dash-topbar-title"><PanelLeft aria-hidden="true" /><strong>Dashboard</strong></div>
-          <Link className="dash-search" href="/command-center"><Search aria-hidden="true" />Search reviews</Link>
-          <div className="dash-topbar-status"><span><i /> Demo mode</span><span className="dash-avatar">DP</span></div>
-        </header>
         <section className="dash-frame" aria-labelledby="dashboard-title">
           <header className="dash-frame-header">
             <div><h1 id="dashboard-title">Dashboard</h1><p>Illustrative dashboard data</p></div>
@@ -71,6 +48,5 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
-    </div>
   );
 }

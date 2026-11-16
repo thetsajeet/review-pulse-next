@@ -604,8 +604,9 @@
 }
 
 .refactor-form textarea:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  border-color: #047857;
+  outline: 2px solid #047857;
+  outline-offset: -2px;
 }
 
 .refactor-actions {

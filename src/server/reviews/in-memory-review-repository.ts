@@ -3,6 +3,7 @@ import {
   ReviewNotFoundError,
   type ReviewRepository,
 } from "../../domain/review-repository";
+import { sentimentAnalysisSchema } from "../../domain/review-contract";
 import type { DraftVersion, Review, ReviewStatus, TimelineEvent } from "../../domain/reviews";
 
 export class InMemoryReviewRepository implements ReviewRepository {
@@ -93,6 +94,14 @@ export class InMemoryReviewRepository implements ReviewRepository {
       if (!latestDraft || !event.content.trim()) {
         throw new InvalidTimelineEventError("Feedback requires an existing draft and non-empty content.");
       }
+    } else if (event.type === "analysis") {
+      if (!sentimentAnalysisSchema.safeParse(event.analysis).success) {
+        throw new InvalidTimelineEventError("Review sentiment analysis is invalid.");
+      }
+      if (latestDraft || review.sentiment) {
+        throw new InvalidTimelineEventError("Review sentiment can only be recorded before the first draft.");
+      }
+      review.sentiment = structuredClone(event.analysis);
     } else {
       if (event.type !== "decision" || (event.status !== "approved" && event.status !== "rejected")) {
         throw new InvalidTimelineEventError("Timeline event type or decision status is invalid.");

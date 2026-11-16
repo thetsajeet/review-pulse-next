@@ -2,6 +2,11 @@ import { z } from "zod";
 import type { Review, TimelineEvent } from "./reviews";
 
 export const reviewStatusSchema = z.enum(["pending", "approved", "rejected"]);
+export const sentimentAnalysisSchema = z.object({
+  sentiment: z.enum(["positive", "neutral", "negative", "mixed"]),
+  summary: z.string().describe("A concise factual summary of the review."),
+  themes: z.array(z.string()).describe("The main topics actually mentioned in the review."),
+});
 
 export const reviewSchema = z.object({
   id: z.string(),
@@ -29,6 +34,7 @@ export const reviewSchema = z.object({
     videoUrl: z.string().optional(),
   })).optional(),
   status: reviewStatusSchema,
+  sentiment: sentimentAnalysisSchema.optional(),
 }) satisfies z.ZodType<Review>;
 
 const eventBase = {
@@ -50,6 +56,7 @@ export const decisionEventSchema = z.object({
 export const timelineEventSchema = z.discriminatedUnion("type", [
   draftEventSchema,
   z.object({ ...eventBase, type: z.literal("feedback"), content: z.string() }),
+  z.object({ ...eventBase, type: z.literal("analysis"), analysis: sentimentAnalysisSchema }),
   decisionEventSchema,
 ]) satisfies z.ZodType<TimelineEvent>;
 

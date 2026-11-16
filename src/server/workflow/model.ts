@@ -1,13 +1,9 @@
 import type { BaseMessage } from "@langchain/core/messages";
-import { z } from "zod";
+import { sentimentAnalysisSchema } from "../../domain/review-contract";
 import type { SentimentAnalysis } from "../../domain/draft-workflow";
 import type { DraftVersion, Review } from "../../domain/reviews";
 
-export const sentimentSchema = z.object({
-  sentiment: z.enum(["positive", "neutral", "negative", "mixed"]),
-  summary: z.string().describe("A concise factual summary of the review."),
-  themes: z.array(z.string()).describe("The main topics actually mentioned in the review."),
-});
+export const sentimentSchema = sentimentAnalysisSchema;
 
 export interface DraftModelInput {
   review: Review;

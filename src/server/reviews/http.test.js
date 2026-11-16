@@ -66,8 +66,11 @@ describe("review HTTP handlers", () => {
     expect(approved.status).toBe(201);
     const detail = await (await api.get("review-marcus")).json();
     expect(detail.review.status).toBe("approved");
-    expect(detail.timeline.map((event) => event.type)).toEqual(["draft", "feedback", "draft", "decision"]);
-    expect((await api.list(new Request("http://localhost/api/reviews?status=approved")).then((response) => response.json())).reviews).toHaveLength(1);
+    expect(detail.timeline.map((event) => event.type)).toEqual(["analysis", "draft", "feedback", "draft", "decision"]);
+    expect(detail.review.sentiment.sentiment).toBe("negative");
+    const approvedReviews = (await api.list(new Request("http://localhost/api/reviews?status=approved")).then((response) => response.json())).reviews;
+    expect(approvedReviews).toHaveLength(1);
+    expect(approvedReviews[0].sentiment.sentiment).toBe("negative");
     expect((await api.decide(post({ draftId: second.id }), "review-marcus", "rejected")).status).toBe(409);
   });
 });

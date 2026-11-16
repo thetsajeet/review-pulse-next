@@ -174,6 +174,25 @@ describe("InMemoryReviewRepository", () => {
     expect((await repository.getTimeline(draft.reviewId))[0].content).toBe(draft.content);
   });
 
+  test("stores analysis atomically and rejects invalid or duplicate sentiment", async () => {
+    const repository = new InMemoryReviewRepository(mockReviews);
+    const analysis = {
+      type: "analysis",
+      id: "analysis-1",
+      reviewId: draft.reviewId,
+      createdAt: draft.createdAt,
+      analysis: { sentiment: "negative", summary: "A long wait.", themes: ["service"] },
+    };
+    await expect(repository.appendEvent({ ...analysis, analysis: { ...analysis.analysis, sentiment: "unknown" } })).rejects.toBeInstanceOf(InvalidTimelineEventError);
+    await expect(repository.appendEvents([analysis, { ...draft, version: 2 }])).rejects.toBeInstanceOf(InvalidTimelineEventError);
+    expect((await repository.get(draft.reviewId)).sentiment).toBeUndefined();
+    expect(await repository.getTimeline(draft.reviewId)).toEqual([]);
+    await repository.appendEvents([analysis, draft]);
+    analysis.analysis.themes.push("changed");
+    expect((await repository.get(draft.reviewId)).sentiment.themes).toEqual(["service"]);
+    await expect(repository.appendEvent({ ...analysis, id: "analysis-2" })).rejects.toBeInstanceOf(InvalidTimelineEventError);
+  });
+
   test("appends batches atomically when a later event is invalid", async () => {
     const repository = new InMemoryReviewRepository(mockReviews);
     await repository.appendEvent(draft);
