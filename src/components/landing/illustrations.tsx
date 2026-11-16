@@ -16,9 +16,9 @@ const tones: Record<CubeVariant, string> = {
 };
 
 const connectors = [
-  { path: "M195 50 C267.5 50 267.5 78 340 78", start: [195, 50], end: [340, 78], delay: "1s" },
-  { path: "M430 78 C500 78 500 24 570 24", start: [430, 78], end: [570, 24], delay: "3s" },
-  { path: "M660 24 C732.5 24 732.5 57 805 57", start: [660, 24], end: [805, 57], delay: "5s" },
+  { path: "M195 50 C267.5 50 267.5 62 340 62", start: [195, 50], end: [340, 62], delay: "1s" },
+  { path: "M430 62 C500 62 500 39 570 39", start: [430, 62], end: [570, 39], delay: "3s" },
+  { path: "M660 39 C732.5 39 732.5 53 805 53", start: [660, 39], end: [805, 53], delay: "5s" },
 ];
 
 function subscribeToMotionPreference(onChange: () => void) {
@@ -58,7 +58,7 @@ export function WorkflowDiagram() {
   return (
     <section id="workflow" className="workflow-section page-width" aria-label="Review reply workflow">
       <div ref={ref} className="workflow-connector" data-motion-visible={inView} aria-hidden="true">
-        <svg viewBox="0 0 1000 100" preserveAspectRatio="none">
+        <svg viewBox="0 0 1000 100">
           {connectors.map(({ path, start, end, delay }) => (
             <g key={path}>
               <path className="workflow-dash" d={path} />

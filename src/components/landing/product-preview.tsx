@@ -23,8 +23,8 @@ export function ProductPreview() {
             <span className="preview-tab">Pending <b>4</b></span>
             <span className="preview-tab">Approved <b>1</b></span>
           </div>
-          {reviews.map((review, index) => (
-            <div className={`preview-review ${index === 0 ? "preview-review-active" : ""}`} key={review.name}>
+          {reviews.map((review) => (
+            <div className={`preview-review ${review.name === "Marcus Webb" ? "preview-review-active" : ""}`} key={review.name}>
               <span className="preview-avatar">{review.initials}</span>
               <div className="preview-review-content">
                 <div className="preview-review-header">
