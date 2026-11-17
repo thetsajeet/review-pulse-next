@@ -2,7 +2,7 @@ import type { Review } from "../../domain/reviews";
 
 export const mockReviews: Review[] = [
   {
-    id: "review-marcus",
+    id: "8b20c36b-78d7-4525-8e5b-a720cf8f8e3f",
     name: "accounts/mock-account/locations/location-brewhouse/reviews/mock-marcus",
     reviewId: "mock-marcus",
     location: { id: "location-brewhouse", name: "Brewhouse Koregaon Park" },
@@ -15,7 +15,7 @@ export const mockReviews: Review[] = [
     status: "pending",
   },
   {
-    id: "review-priya",
+    id: "4e955fa0-8fe1-464d-9182-24aa1420c03c",
     name: "accounts/mock-account/locations/location-brewhouse/reviews/mock-priya",
     reviewId: "mock-priya",
     location: { id: "location-brewhouse", name: "Brewhouse Koregaon Park" },
@@ -28,7 +28,7 @@ export const mockReviews: Review[] = [
     status: "pending",
   },
   {
-    id: "review-aisha",
+    id: "44a3870a-761f-43df-86b8-92f3fc24abff",
     name: "accounts/mock-account/locations/location-brewhouse/reviews/mock-aisha",
     reviewId: "mock-aisha",
     location: { id: "location-brewhouse", name: "Brewhouse Koregaon Park" },
@@ -41,7 +41,7 @@ export const mockReviews: Review[] = [
     status: "pending",
   },
   {
-    id: "review-tom",
+    id: "2b5c321c-8f33-468d-86b7-aec379ec3960",
     name: "accounts/mock-account/locations/location-brewhouse/reviews/mock-tom",
     reviewId: "mock-tom",
     location: { id: "location-brewhouse", name: "Brewhouse Koregaon Park" },
@@ -54,7 +54,7 @@ export const mockReviews: Review[] = [
     status: "pending",
   },
   {
-    id: "review-sofia",
+    id: "000f100a-daee-4fe2-b124-2d7b6cd97c2b",
     name: "accounts/mock-account/locations/location-brewhouse/reviews/mock-sofia",
     reviewId: "mock-sofia",
     location: { id: "location-brewhouse", name: "Brewhouse Koregaon Park" },

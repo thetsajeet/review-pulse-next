@@ -5,6 +5,8 @@ import { InMemoryReviewRepository } from "./in-memory-review-repository";
 import { mockReviews } from "./mock-reviews";
 import { createReviewService } from "./service";
 
+const reviewId = mockReviews[0].id;
+
 function setup() {
   const repository = new InMemoryReviewRepository(mockReviews);
   let generation = 0;
@@ -37,40 +39,40 @@ describe("review HTTP handlers", () => {
     expect((await list.json()).reviews).toHaveLength(5);
     expect((await api.get("missing")).status).toBe(404);
     expect((await api.list(new Request("http://localhost/api/reviews?status=unknown"))).status).toBe(400);
-    expect((await api.refactor(post({ instruction: " " }), "review-marcus", "draft")).status).toBe(400);
-    expect((await api.generate(post("{"), "review-marcus")).status).toBe(400);
-    expect((await api.generate(post({}, { Origin: "https://other.example" }), "review-marcus")).status).toBe(403);
+    expect((await api.refactor(post({ instruction: " " }), reviewId, "draft")).status).toBe(400);
+    expect((await api.generate(post("{"), reviewId)).status).toBe(400);
+    expect((await api.generate(post({}, { Origin: "https://other.example" }), reviewId)).status).toBe(403);
     expect((await api.generate(post({}, {
       Origin: "http://other.example",
       Host: "127.0.0.1:3181",
-    }), "review-marcus")).status).toBe(403);
+    }), reviewId)).status).toBe(403);
     expect((await api.generate(post({}, {
       Origin: "http://127.0.0.1:3181",
       Host: "127.0.0.1:3181",
-    }), "review-marcus")).status).toBe(201);
+    }), reviewId)).status).toBe(201);
   });
 
   test("generates, refactors, and records a local decision with stale-draft protection", async () => {
     const api = setup();
-    const initial = await api.generate(post({}), "review-marcus");
+    const initial = await api.generate(post({}), reviewId);
     expect(initial.status).toBe(201);
     const first = (await initial.json()).draft;
-    const refined = await api.refactor(post({ instruction: "Make it shorter." }), "review-marcus", first.id);
+    const refined = await api.refactor(post({ instruction: "Make it shorter." }), reviewId, first.id);
     expect(refined.status).toBe(201);
     const second = (await refined.json()).draft;
     expect(second.version).toBe(2);
-    expect((await api.refactor(post({ instruction: "Try again." }), "review-marcus", first.id)).status).toBe(409);
-    expect((await api.decide(post({ draftId: first.id }), "review-marcus", "approved")).status).toBe(409);
+    expect((await api.refactor(post({ instruction: "Try again." }), reviewId, first.id)).status).toBe(409);
+    expect((await api.decide(post({ draftId: first.id }), reviewId, "approved")).status).toBe(409);
 
-    const approved = await api.decide(post({ draftId: second.id }), "review-marcus", "approved");
+    const approved = await api.decide(post({ draftId: second.id }), reviewId, "approved");
     expect(approved.status).toBe(201);
-    const detail = await (await api.get("review-marcus")).json();
+    const detail = await (await api.get(reviewId)).json();
     expect(detail.review.status).toBe("approved");
     expect(detail.timeline.map((event) => event.type)).toEqual(["analysis", "draft", "feedback", "draft", "decision"]);
     expect(detail.review.sentiment.sentiment).toBe("negative");
     const approvedReviews = (await api.list(new Request("http://localhost/api/reviews?status=approved")).then((response) => response.json())).reviews;
     expect(approvedReviews).toHaveLength(1);
     expect(approvedReviews[0].sentiment.sentiment).toBe("negative");
-    expect((await api.decide(post({ draftId: second.id }), "review-marcus", "rejected")).status).toBe(409);
+    expect((await api.decide(post({ draftId: second.id }), reviewId, "rejected")).status).toBe(409);
   });
 });

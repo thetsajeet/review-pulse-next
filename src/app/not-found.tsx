@@ -39,8 +39,8 @@ export default function NotFound() {
         <h1>This page took a wrong turn.</h1>
         <p>The link may be broken or the page may have moved.<br className="not-found-break" /> Even Cubecca could not find it.</p>
         <div className="not-found-actions">
-          <Link href="/command-center">Back to reviews</Link>
-          <Link href="/dashboard">Go to dashboard</Link>
+          <Link href="/workspace/reviews">Back to reviews</Link>
+          <Link href="/workspace/dashboard">Go to dashboard</Link>
         </div>
       </div>
 

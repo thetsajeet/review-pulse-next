@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Check,
   CircleCheck,
@@ -40,6 +42,10 @@ const starValues: Record<StarRating, number> = {
   FOUR: 4,
   FIVE: 5,
 };
+
+function subscribeToHydration() {
+  return () => {};
+}
 
 type Detail = { review: Review; timeline: TimelineEvent[] };
 type BusyAction = "generating" | "refactoring" | "approving" | "rejecting" | null;
@@ -409,15 +415,19 @@ function ReviewWorkspace({
   );
 }
 
-export function CommandCenter() {
+export function CommandCenter({ initialReviewId = null }: { initialReviewId?: string | null }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [filter, setFilter] = useState<ReviewStatus | "all">("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const { query: searchQuery } = useWorkspaceSearch();
   const reducedMotion = useReducedMotion();
+  const pathname = usePathname();
+  const hydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
+  const selectedId = hydrated
+    ? pathname.startsWith("/workspace/reviews/") ? decodeURIComponent(pathname.slice("/workspace/reviews/".length)) : null
+    : initialReviewId;
 
   const refresh = useCallback(async () => {
     try {
@@ -446,7 +456,8 @@ export function CommandCenter() {
   }, [notice]);
 
   function selectReview(id: string | null) {
-    setSelectedId(id);
+    const path = id === null ? "/workspace/reviews" : `/workspace/reviews/${encodeURIComponent(id)}`;
+    if (window.location.pathname !== path) window.history.pushState(null, "", path);
   }
 
   const filteredReviews = reviews.filter((review) => {
@@ -498,11 +509,11 @@ export function CommandCenter() {
               <ul className="inbox-list">
                 {filteredReviews.map((review) => (
                   <li key={review.id}>
-                    <button
-                      type="button"
+                    <Link
+                      href={`/workspace/reviews/${encodeURIComponent(review.id)}`}
                       className={cn("inbox-review", selectedId === review.id && "inbox-review-selected")}
-                      aria-pressed={selectedId === review.id}
-                      onClick={() => selectReview(review.id)}
+                      aria-current={selectedId === review.id ? "page" : undefined}
+                      onNavigate={(event) => { event.preventDefault(); selectReview(review.id); }}
                     >
                       <span className="inbox-review-content">
                         <span className="inbox-review-heading"><strong>{reviewerName(review)}</strong><time>{relativeTime(review.createTime)}</time></span>
@@ -520,7 +531,7 @@ export function CommandCenter() {
                           >{review.status}</motion.span>
                         </AnimatePresence>
                       </span>
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>

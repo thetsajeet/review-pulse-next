@@ -30,7 +30,7 @@ export default function Home() {
           <a href="#control">Control</a>
           <a href="/login">Log in</a>
         </nav>
-        <MotionLink href="/command-center" size="small">
+        <MotionLink href="/workspace/reviews" size="small">
           Open workspace
           <ArrowRight aria-hidden="true" />
         </MotionLink>
@@ -58,7 +58,7 @@ export default function Home() {
               own words, then make the call yourself.
             </p>
             <div className="hero-actions">
-              <MotionLink href="/command-center">
+              <MotionLink href="/workspace/reviews">
                 Open workspace <ArrowRight aria-hidden="true" />
               </MotionLink>
               <MotionLink href="#workflow" variant="outline">
@@ -173,7 +173,7 @@ export default function Home() {
             Your next review deserves a thoughtful reply.
           </h2>
           <div className="closing-actions">
-            <MotionLink href="/command-center">
+            <MotionLink href="/workspace/reviews">
               Open workspace <ArrowRight aria-hidden="true" />
             </MotionLink>
             <MotionLink href="#top" variant="outline">

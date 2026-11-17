@@ -120,7 +120,6 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  overscroll-behavior: contain;
   padding: 8px;
   scrollbar-color: #d4d4d8 transparent;
   scrollbar-width: thin;
@@ -135,6 +134,8 @@
   border-bottom: 1px solid var(--border);
   border-radius: 8px;
   text-align: left;
+  color: inherit;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -300,7 +301,6 @@
   min-width: 0;
   height: 100dvh;
   overflow-y: auto;
-  overscroll-behavior: contain;
   scrollbar-color: #d4d4d8 transparent;
   scrollbar-width: thin;
 }
@@ -1616,9 +1616,9 @@
   }
 
   .command-content > .workspace {
-    height: auto;
-    min-height: 430px;
-    overflow: visible;
+    height: min(65dvh, 640px);
+    min-height: 300px;
+    overflow-y: auto;
   }
 
   .workspace-header {

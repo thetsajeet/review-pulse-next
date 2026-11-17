@@ -1,5 +1,5 @@
-import { CommandCenter } from "@/components/command-center/command-center";
+import { redirect } from "next/navigation";
 
 export default function CommandCenterPage() {
-  return <CommandCenter />;
+  redirect("/workspace/reviews");
 }

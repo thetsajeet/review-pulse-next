@@ -14,14 +14,14 @@ bun run dev
 ```
 
 Set `GEMINI_API_KEY` in `.env.local` (see `.env.example`) before generating
-drafts. Open [http://localhost:3000/command-center](http://localhost:3000/command-center),
-select a pending review to generate its first draft, and optionally provide
+drafts. Open [http://localhost:3000/workspace/reviews](http://localhost:3000/workspace/reviews),
+select a pending review to open its shareable `/workspace/reviews/{reviewId}` URL and generate its first draft, and optionally provide
 feedback to refactor it. Approve or reject records a local decision only;
 nothing is published to Google. AI drafts can contain inaccurate or unsupported
 claims, so review them carefully.
 
 The `/login`, `/signup`, and `/signed-out` routes preview the authentication
-screens; Google sign-in and sign-out are not connected. `/dashboard` shows
+screens; Google sign-in and sign-out are not connected. `/workspace/dashboard` shows
 illustrative metrics rather than live review analytics. Its inbox link opens
 the review inbox.
 

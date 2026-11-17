@@ -73,7 +73,7 @@ export function AuthScreen({ kind }: { kind: AuthScreenKind }) {
           <h1 id="auth-title">{content.title}</h1>
           <p className="auth-description">{content.description}</p>
           <button className="auth-google" type="button" onClick={() => setNotice(true)}><GoogleMark />{content.button}</button>
-          {notice && <p className="auth-notice" role="status">Google sign-in is not available yet. <Link href="/dashboard">Explore the dashboard</Link>.</p>}
+          {notice && <p className="auth-notice" role="status">Google sign-in is not available yet. <Link href="/workspace/dashboard">Explore the dashboard</Link>.</p>}
           {kind === "signup" ? (
             <>
               <ul className="auth-benefits">

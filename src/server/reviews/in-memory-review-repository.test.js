@@ -6,10 +6,13 @@ import {
 import { InMemoryReviewRepository } from "./in-memory-review-repository";
 import { mockReviews } from "./mock-reviews";
 
+const reviewId = mockReviews[0].id;
+const otherReviewId = mockReviews[1].id;
+
 const draft = {
   type: "draft",
   id: "draft-1",
-  reviewId: "review-marcus",
+  reviewId: reviewId,
   createdAt: "2026-11-14T06:00:00.000Z",
   version: 1,
   content: "Thank you for your feedback.",
@@ -18,7 +21,7 @@ const draft = {
 const feedback = {
   type: "feedback",
   id: "feedback-1",
-  reviewId: "review-marcus",
+  reviewId: reviewId,
   createdAt: "2026-11-14T06:01:00.000Z",
   content: "Make it warmer.",
 };
@@ -32,15 +35,23 @@ const revision = {
 };
 
 describe("InMemoryReviewRepository", () => {
+  test("assigns each seeded review a distinct, name-independent ID", () => {
+    const ids = mockReviews.map((review) => review.id);
+    expect(new Set(ids).size).toBe(mockReviews.length);
+    for (const id of ids) {
+      expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    }
+  });
+
   test("starts with isolated pending reviews and no fabricated timeline", async () => {
     const repository = new InMemoryReviewRepository(mockReviews);
     const reviews = await repository.list("pending");
     expect(reviews).toHaveLength(5);
     expect(await repository.list("approved")).toEqual([]);
-    expect(await repository.getTimeline("review-marcus")).toEqual([]);
+    expect(await repository.getTimeline(reviewId)).toEqual([]);
 
     reviews[0].reviewer.displayName = "Changed";
-    expect((await repository.get("review-marcus")).reviewer.displayName).toBe("Marcus Webb");
+    expect((await repository.get(reviewId)).reviewer.displayName).toBe("Marcus Webb");
     expect(await repository.get("missing")).toBeNull();
     await expect(repository.getTimeline("missing")).rejects.toBeInstanceOf(ReviewNotFoundError);
   });
@@ -103,7 +114,7 @@ describe("InMemoryReviewRepository", () => {
     ]);
     expect((await repository.get(draft.reviewId)).status).toBe("approved");
     expect((await repository.list("approved")).map((review) => review.id)).toEqual([draft.reviewId]);
-    expect(await repository.getTimeline("review-priya")).toEqual([]);
+    expect(await repository.getTimeline(otherReviewId)).toEqual([]);
 
     timeline[0].content = "Changed";
     expect((await repository.getTimeline(draft.reviewId))[0].content).toBe(draft.content);

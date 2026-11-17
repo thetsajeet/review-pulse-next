@@ -34,7 +34,8 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const collapsed = sidebarPreference ?? narrowScreen;
   const [query, setQuery] = useState("");
   const pathname = usePathname();
-  const isReviews = pathname.startsWith("/command-center");
+  const isReviews = pathname === "/workspace/reviews" || pathname.startsWith("/workspace/reviews/");
+  const reviewSlug = pathname.startsWith("/workspace/reviews/") ? pathname.slice("/workspace/reviews/".length) : null;
 
   function closeMobileNavigation() {
     if (narrowScreen) setSidebarPreference(true);
@@ -51,8 +52,8 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
           </Link>
           <span className="shared-nav-label">Menu</span>
           <nav className="shared-nav">
-            <Link className={`shared-nav-link${!isReviews ? " active" : ""}`} href="/dashboard" aria-label="Dashboard" aria-current={!isReviews ? "page" : undefined} title="Dashboard" onClick={closeMobileNavigation}><LayoutDashboard /><span>Dashboard</span></Link>
-            <Link className={`shared-nav-link${isReviews ? " active" : ""}`} href="/command-center" aria-label="Reviews" aria-current={isReviews ? "page" : undefined} title="Reviews" onClick={closeMobileNavigation}><MessageSquare /><span>Reviews</span></Link>
+            <Link className={`shared-nav-link${!isReviews ? " active" : ""}`} href="/workspace/dashboard" aria-label="Dashboard" aria-current={!isReviews ? "page" : undefined} title="Dashboard" onClick={closeMobileNavigation}><LayoutDashboard /><span>Dashboard</span></Link>
+            <Link className={`shared-nav-link${isReviews ? " active" : ""}`} href="/workspace/reviews" aria-label="Reviews" aria-current={isReviews ? "page" : undefined} title="Reviews" onClick={closeMobileNavigation}><MessageSquare /><span>Reviews</span></Link>
             <span className="shared-nav-link unavailable" aria-disabled="true" title="Locations, coming soon"><MapPin /><span>Locations</span><small>Soon</small></span>
           </nav>
           <span className="shared-nav-label">Workspace</span>
@@ -66,12 +67,12 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
               <button type="button" className="sidebar-toggle" aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} aria-expanded={!collapsed} aria-controls="workspace-navigation" onClick={() => setSidebarPreference(!collapsed)}><PanelLeft /></button>
               {isReviews ? <Inbox aria-hidden="true" /> : <LayoutDashboard aria-hidden="true" />}
               <strong>{isReviews ? "Reviews" : "Dashboard"}</strong>
-              {isReviews && <><span aria-hidden="true">/</span><span>Inbox</span></>}
+              {isReviews && <><span aria-hidden="true">/</span><Link href="/workspace/reviews">Inbox</Link>{reviewSlug && <><span aria-hidden="true">/</span><span aria-current="page">{reviewSlug}</span></>}</>}
             </div>
             {isReviews ? (
               <label className="shared-search"><Search aria-hidden="true" /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search reviews" aria-label="Search reviews" /></label>
             ) : (
-              <Link className="shared-search" href="/command-center"><Search aria-hidden="true" />Search reviews</Link>
+              <Link className="shared-search" href="/workspace/reviews"><Search aria-hidden="true" />Search reviews</Link>
             )}
           </header>
           {children}

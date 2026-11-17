@@ -17,8 +17,9 @@
 .workspace-shell-collapsed .shared-nav-link { justify-content: center; padding-inline: 0; }
 .shared-main { display: flex; min-width: 0; min-height: 0; flex-direction: column; }
 .shared-topbar { display: flex; min-height: 63px; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; border-bottom: 1px solid #e4e4e7; background: #fff; }
-.shared-page-title { display: flex; min-width: 0; align-items: center; gap: 10px; color: #52525b; font-size: 13px; white-space: nowrap; }
+.shared-page-title { display: flex; min-width: 0; align-items: center; gap: 10px; overflow: hidden; color: #52525b; font-size: 13px; white-space: nowrap; }
 .shared-page-title strong { color: #18181b; font-weight: 650; }
+.shared-page-title > span[aria-current] { overflow: hidden; text-overflow: ellipsis; }
 .shared-page-title > svg, .shared-search svg, .sidebar-toggle svg { width: 17px; height: 17px; flex: none; }
 .sidebar-toggle { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid transparent; border-radius: 8px; color: #52525b; cursor: pointer; }
 .sidebar-toggle:hover { border-color: #e4e4e7; background: #fafafa; }
@@ -28,7 +29,7 @@
 .shared-search input { width: 100%; min-width: 0; outline: none; color: #18181b; }
 .shared-search input::placeholder { color: #71717a; }
 .workspace-shell :is(a, button, input):focus-visible { outline: 2px solid #047857; outline-offset: 2px; }
-.workspace-shell .command-center { display: flex; flex: 1; min-height: 0; height: calc(100dvh - 63px); overflow: hidden; }
+.workspace-shell .command-center { display: flex; flex: none; min-height: 0; height: calc(100dvh - 63px); overflow: hidden; }
 .workspace-shell .command-main { display: flex; flex: 1; min-width: 0; min-height: 0; flex-direction: column; }
 .workspace-shell .command-content { flex: 1; min-height: 0; }
 .workspace-shell .dash-main { padding-top: 14px; }
@@ -44,7 +45,7 @@
   .sidebar-mobile-close svg { width: 17px; height: 17px; }
   .workspace-shell-collapsed .shared-sidebar { width: 64px; box-shadow: none; }
   .shared-topbar { position: sticky; z-index: 10; top: 0; min-height: 58px; padding-inline: 12px; }
-  .shared-page-title > svg, .shared-page-title > span { display: none; }
+  .shared-page-title > svg, .shared-page-title > span, .shared-page-title > a { display: none; }
   .shared-search { flex: 1; min-width: 0; max-width: 300px; }
   .workspace-shell .command-center { height: auto; min-height: calc(100dvh - 58px); overflow: visible; }
   .workspace-shell .command-content { overflow: visible; }
