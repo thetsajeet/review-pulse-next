@@ -1,7 +1,7 @@
-# Product Requirements Document: Review Pulse (MVP)
+# Product Requirements Document: Cubecca (MVP)
 
 ## 1. Product Vision & Objective
-Review Pulse is a B2B SaaS platform designed to eliminate the friction of managing online reputation. By utilizing a human-in-the-loop AI agent, it allows local business owners to maintain a high-frequency, optimized response rate on Google Business Profiles (GBP) to improve local SEO and customer satisfaction, without the manual overhead of writing responses from scratch.
+Cubecca is a B2B SaaS platform designed to eliminate the friction of managing online reputation. By utilizing a human-in-the-loop AI agent, it allows local business owners to maintain a high-frequency, optimized response rate on Google Business Profiles (GBP) to improve local SEO and customer satisfaction, without the manual overhead of writing responses from scratch.
 
 ## 2. Target Audience & Account Structure
 *   **Primary User:** Local business owners and franchise operators.

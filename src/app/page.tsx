@@ -12,9 +12,9 @@ import "./landing.css";
 
 function Brand() {
   return (
-    <a className="brand" href="#top" aria-label="Review Pulse home">
+    <a className="brand" href="#top" aria-label="Cubecca home">
       <BrandMark />
-      <span>Review Pulse</span>
+      <span>Cubecca</span>
     </a>
   );
 }
@@ -54,7 +54,7 @@ export default function Home() {
               <em>Nothing sent unseen.</em>
             </h1>
             <p className="hero-description">
-              Pulse prepares a first reply for your review. Refine it in your
+              Cubecca prepares a first reply for your review. Refine it in your
               own words, then make the call yourself.
             </p>
             <div className="hero-actions">
@@ -82,7 +82,7 @@ export default function Home() {
             <article className="feature-item feature-trace">
               <div className="feature-visual trace-visual" aria-hidden="true">
                 <span><i /> Customer review <time>10:42</time></span>
-                <span><i /> Pulse analysis <time>complete</time></span>
+                <span><i /> Cubecca analysis <time>complete</time></span>
                 <span><i /> Agent draft v1 <time>superseded</time></span>
                 <span><i /> Your feedback <time>10:51</time></span>
                 <span className="trace-visual-latest"><i /> Latest draft v2 <time>10:52</time></span>
@@ -101,7 +101,7 @@ export default function Home() {
               </div>
               <div className="feature-copy">
                 <h3>Sentiment-informed drafts</h3>
-                <p>Pulse considers the review&apos;s sentiment when preparing a reply.</p>
+                <p>Cubecca considers the review&apos;s sentiment when preparing a reply.</p>
               </div>
             </article>
             <article className="feature-item feature-refine">
@@ -141,7 +141,7 @@ export default function Home() {
         <section id="control" className="content-section page-width">
           <div className="control-card">
             <div className="control-copy">
-              <h2 className="display-heading">Pulse writes. You decide.</h2>
+              <h2 className="display-heading">Cubecca writes. You decide.</h2>
               <p>
                 Nothing reaches a customer on its own. Every reply waits for a
                 person, and every decision stays with its review.
@@ -186,7 +186,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="page-width footer-content">
           <Brand />
-          <p>© 2026 Review Pulse. Not affiliated with Google.</p>
+          <p>© 2026 Cubecca. Not affiliated with Google.</p>
         </div>
       </footer>
     </div>

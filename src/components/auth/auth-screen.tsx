@@ -52,7 +52,7 @@ function AuthArtwork() {
         <div className="cube-motion-hop"><Cube variant="spark" /></div>
       </MotionScope>
       <div className="auth-draft-card">
-        <strong>Pulse draft</strong>
+        <strong>Cubecca draft</strong>
         <p>Hi Marcus, we are truly sorry. Please come back for a dessert on us.</p>
         <div aria-hidden="true"><span>Approve</span><span>Refactor</span></div>
       </div>
@@ -67,7 +67,7 @@ export function AuthScreen({ kind }: { kind: AuthScreenKind }) {
   return (
     <main className="auth-page">
       <div className="auth-main">
-        <Link className="auth-brand" href="/"><BrandMark /><span>Review Pulse</span></Link>
+        <Link className="auth-brand" href="/"><BrandMark /><span>Cubecca</span></Link>
         <section className="auth-content" aria-labelledby="auth-title">
           {kind === "signed-out" && <div className="auth-success"><Check aria-hidden="true" /> Signed out screen preview</div>}
           <h1 id="auth-title">{content.title}</h1>
@@ -87,11 +87,11 @@ export function AuthScreen({ kind }: { kind: AuthScreenKind }) {
           ) : (
             <>
               <p className="auth-note"><LockKeyhole aria-hidden="true" />{kind === "login" ? "Nothing is sent without your approval. Google account access is not available yet." : "This is a preview; no account session was changed."}</p>
-              <p className="auth-switch">{kind === "login" ? <>New to Review Pulse? <Link href="/signup">Sign up</Link></> : <>Not you? <Link href="/login">Use a different account</Link></>}</p>
+              <p className="auth-switch">{kind === "login" ? <>New to Cubecca? <Link href="/signup">Sign up</Link></> : <>Not you? <Link href="/login">Use a different account</Link></>}</p>
             </>
           )}
         </section>
-        <p className="auth-copyright">© 2026 Review Pulse</p>
+        <p className="auth-copyright">© 2026 Cubecca</p>
       </div>
       <AuthArtwork />
     </main>

@@ -6,7 +6,7 @@ import { Cube, type CubeVariant } from "@/components/illustrations/cube";
 
 const stages = [
   { title: "Review arrives", variant: "star" },
-  { title: "Pulse drafts", variant: "spark" },
+  { title: "Cubecca drafts", variant: "spark" },
   { title: "You refine", variant: "check" },
   { title: "You decide", variant: "pin" },
 ] as const;

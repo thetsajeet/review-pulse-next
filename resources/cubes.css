@@ -1,4 +1,4 @@
-/* Review Pulse cubes: animation helpers for <img> or inline <svg> cubes */
+/* Cubecca cubes: animation helpers for <img> or inline <svg> cubes */
 .cube{display:inline-block;width:120px;height:auto}
 .cube-hop{animation:cube-hop 3.2s ease-in-out infinite;transform-origin:50% 82%}
 .cube-roll{animation:cube-roll 6s cubic-bezier(.5,0,.3,1) infinite;transform-origin:87% 63%}

@@ -45,9 +45,9 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
       <div className={`workspace-shell${collapsed ? " workspace-shell-collapsed" : ""}`}>
         <aside className="shared-sidebar" id="workspace-navigation" aria-label="Primary navigation">
           {!collapsed && <button type="button" className="sidebar-mobile-close" aria-label="Collapse sidebar" onClick={() => setSidebarPreference(true)}><PanelLeft /></button>}
-          <Link className="shared-brand" href="/" aria-label="Review Pulse home">
+          <Link className="shared-brand" href="/" aria-label="Cubecca home">
             <BrandMark />
-            <span className="shared-sidebar-copy"><strong>Review Pulse</strong><small>Workspace</small></span>
+            <span className="shared-sidebar-copy"><strong>Cubecca</strong><small>Workspace</small></span>
           </Link>
           <span className="shared-nav-label">Menu</span>
           <nav className="shared-nav">

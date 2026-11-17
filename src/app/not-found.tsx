@@ -10,7 +10,7 @@ export default function NotFound() {
       <header className="not-found-header">
         <Link href="/" className="not-found-brand">
           <BrandMark />
-          <span>Review Pulse</span>
+          <span>Cubecca</span>
         </Link>
       </header>
 
@@ -37,7 +37,7 @@ export default function NotFound() {
         </MotionScope>
         <span className="not-found-sr-only">404</span>
         <h1>This page took a wrong turn.</h1>
-        <p>The link may be broken or the page may have moved.<br className="not-found-break" /> Even Pulse could not find it.</p>
+        <p>The link may be broken or the page may have moved.<br className="not-found-break" /> Even Cubecca could not find it.</p>
         <div className="not-found-actions">
           <Link href="/command-center">Back to reviews</Link>
           <Link href="/dashboard">Go to dashboard</Link>

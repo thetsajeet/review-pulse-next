@@ -13,16 +13,16 @@ Google reviews while spending less time writing individual replies.
 
 ## Product Purpose
 
-Review Pulse helps business owners respond to Google reviews efficiently. An AI
-agent prepares a draft for the owner to read, approve, reject, or refine, so
-owners can focus on the customer and the decision rather than starting each
-reply from scratch. Success means less time spent composing replies while
-maintaining timely, thoughtful responses and visibility into review
-performance.
+Cubecca helps business owners respond to Google reviews efficiently. The
+Cubecca AI agent prepares a draft for the owner to read, approve, reject, or
+refine, so owners can focus on the customer and the decision rather than
+starting each reply from scratch. Success means less time spent composing
+replies while maintaining timely, thoughtful responses and visibility into
+review performance.
 
 ## Positioning
 
-Review Pulse combines AI-generated review replies with a human approval step.
+Cubecca combines AI-generated review replies with a human approval step.
 Drafts should reflect each business's configured tone and context; the owner
 keeps control of what is sent.
 
@@ -48,16 +48,16 @@ locations. The current prototype uses seeded mock reviews.
 
 ## Brand Commitments
 
-The product name is Review Pulse. The experience should feel sleek, minimal,
-and enterprise-level for small business owners, without generic or
-AI-generated-looking presentation. Reply tone is a business preference and may
-be casual, serious, or professional.
+The product and AI agent name is Cubecca. The experience should feel sleek,
+minimal, and enterprise-level for small business owners, without generic or
+AI-generated-looking presentation. Reply tone is a business preference and
+may be casual, serious, or professional.
 
 ## Evidence on Hand
 
 The repository includes seeded mock reviews and prototype UI captures under
 `resources/`. Product and technical requirements are documented in
-`resources/review_pulse_prd.md` and `resources/technical_requirements.md`.
+`resources/cubecca_prd.md` and `resources/technical_requirements.md`.
 There is no real customer, performance, or integration evidence in the
 prototype; do not invent testimonials, outcome metrics, or claims that Google
 publishing or authentication is live.

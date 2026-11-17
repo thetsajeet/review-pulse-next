@@ -1,4 +1,4 @@
-# Review Pulse: Animations Spec
+# Cubecca: Animations Spec
 
 Every animation in the designs so far, written so an AI coding assistant can rebuild it exactly. All values below come from the current design files.
 
@@ -60,11 +60,11 @@ SVG `transform-origin` is in the SVG's own coordinate units (px in the viewBox):
 - **Roll origin (pivot):** bottom-right vertex, `(cx + k, cy + s/2)`.
 
 ### Exported files
-`review-pulse-3d-cubes/` holds `svg/` and `png/` versions of the five cubes. `cubes.css` has classes `.cube-hop` (origin `50% 82%`) and `.cube-roll` (origin `87% 63%`) for use on an `<img>`, where only the whole image can move.
+`cubecca-3d-cubes/` holds `svg/` and `png/` versions of the five cubes. `cubes.css` has classes `.cube-hop` (origin `50% 82%`) and `.cube-roll` (origin `87% 63%`) for use on an `<img>`, where only the whole image can move.
 
 ## 4. `bounce`: workflow strip (Landing)
 
-**Where:** four cubes in the hero workflow strip, labelled 01 Review arrives, 02 Pulse drafts, 03 You approve, 04 Updated on Google.
+**Where:** four cubes in the hero workflow strip, labelled 01 Review arrives, 02 Cubecca drafts, 03 You approve, 04 Updated on Google.
 
 **Effect:** each cube squashes, jumps, lands with a squash and settles, one after another, so the motion reads as the flow moving from 01 to 04.
 
@@ -273,4 +273,4 @@ For `bounce` use `times: [0, 0.03, 0.1, 0.18, 0.22, 0.26, 0.3, 1]` with the matc
 - `Landing.dc.html`: sections 4 to 8 and 11 (search for `.bounce`, `.hop`, `.roll`, `.dl`, `animateMotion`).
 - `4-Login.dc.html`, `5-Signup.dc.html`, `6-SignedOut.dc.html`: section 7.
 - `7-NotFound.dc.html`: sections 7 to 10 (search for `.shad`, `.wob`, `.run`).
-- `review-pulse-3d-cubes/cubes.css`: standalone `cube-hop` and `cube-roll` classes for image-based cubes.
+- `cubecca-3d-cubes/cubes.css`: standalone `cube-hop` and `cube-roll` classes for image-based cubes.

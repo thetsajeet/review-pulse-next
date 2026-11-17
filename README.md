@@ -1,4 +1,4 @@
-# Review Pulse
+# Cubecca
 
 A human-in-the-loop review triage prototype with a Command Center, REST API,
 and LangGraph/Gemini workflow. It uses mock reviews and does not connect to
@@ -49,7 +49,7 @@ The review model follows the
 [Google Business Profile Review resource](https://developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews):
 it retains Google's resource name, review ID, reviewer, star-rating enum,
 timestamps, and optional reply and media fields. The internal `id`, `location`,
-and `status` are Review Pulse fields; local triage status is distinct from
+and `status` are Cubecca fields; local triage status is distinct from
 Google's reply moderation state. Google identifiers are required by the app;
 other source fields may be absent, including comments on rating-only reviews.
 

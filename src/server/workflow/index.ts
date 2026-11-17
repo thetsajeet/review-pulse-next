@@ -4,15 +4,15 @@ import { createGeminiModel } from "./gemini-model";
 import { createReviewWorkflow } from "./review-workflow";
 
 declare global {
-  var reviewPulseWorkflow: DraftWorkflow | undefined;
+  var cubeccaWorkflow: DraftWorkflow | undefined;
 }
 
 export function getReviewWorkflow(): DraftWorkflow {
-  if (!globalThis.reviewPulseWorkflow) {
-    globalThis.reviewPulseWorkflow = createReviewWorkflow(
+  if (!globalThis.cubeccaWorkflow) {
+    globalThis.cubeccaWorkflow = createReviewWorkflow(
       reviewRepository,
       createGeminiModel(process.env.GEMINI_API_KEY ?? "", process.env.GEMINI_MODEL),
     );
   }
-  return globalThis.reviewPulseWorkflow;
+  return globalThis.cubeccaWorkflow;
 }

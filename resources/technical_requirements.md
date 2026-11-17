@@ -1,4 +1,4 @@
-# Technical UI/UX Implementation Requirements — Review Pulse
+# Technical UI/UX Implementation Requirements — Cubecca
 
 ## 1. Global Layout & Architecture
 * **Viewport Layout**: The Command Center uses four areas: a left navigation rail, review inbox, review trace, and details panel.
